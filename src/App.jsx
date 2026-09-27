@@ -1,0 +1,426 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import Navbar from './components/Navbar';
+import VisualizerBars from './components/VisualizerBars';
+import VisualizerImage from './components/VisualizerImage';
+import PseudocodeTracer from './components/PseudocodeTracer';
+import TraceTable from './components/TraceTable';
+import ControlsToolbar from './components/ControlsToolbar';
+import QuizModal from './components/QuizModal';
+import RaceMode from './components/RaceMode';
+import RevisionCards from './components/RevisionCards';
+import CustomArrayModal from './components/CustomArrayModal';
+import KeyboardShortcutsModal from './components/KeyboardShortcutsModal';
+
+import { ALGORITHMS } from './constants/algorithms';
+import { generateSteps } from './services/sortingEngine';
+import { soundManager } from './utils/audio';
+import confetti from 'canvas-confetti';
+
+export default function App() {
+  // Navigation & View State
+  const [activeView, setActiveView] = useState('visualizer'); // 'visualizer' | 'race' | 'revision'
+  const [visualizerMode, setVisualizerMode] = useState('bars'); // 'bars' | 'image'
+  const [selectedAlgorithm, setSelectedAlgorithm] = useState('bubble');
+  const [isDarkMode, setIsDarkMode] = useState(true);
+
+  // Audio State
+  const [audioMode, setAudioMode] = useState('chimes');
+
+  // Playback & Array State
+  const [arraySize, setArraySize] = useState(20);
+  const [speed, setSpeed] = useState(15); // steps per second
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [activePreset, setActivePreset] = useState('random');
+
+  const [initialArray, setInitialArray] = useState([]);
+  const [steps, setSteps] = useState([]);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
+
+  // Quiz / Active Recall State
+  const [quizMode, setQuizMode] = useState(false);
+  const [activeQuiz, setActiveQuiz] = useState(null);
+  const [isQuizModalOpen, setIsQuizModalOpen] = useState(false);
+  const [quizStats, setQuizStats] = useState({ score: 0, streak: 0, total: 0 });
+
+  // Modals
+  const [isCustomModalOpen, setIsCustomModalOpen] = useState(false);
+  const [isShortcutsOpen, setIsShortcutsOpen] = useState(false);
+
+  // Playback timer ref
+  const playTimerRef = useRef(null);
+
+  // Helper to generate array based on preset
+  const createPresetArray = useCallback((preset, size = arraySize) => {
+    let arr = [];
+    if (preset === 'reversed') {
+      arr = Array.from({ length: size }, (_, i) => Math.round(95 - (i / (size - 1 || 1)) * 85));
+    } else if (preset === 'nearly_sorted') {
+      arr = Array.from({ length: size }, (_, i) => Math.round(10 + (i / (size - 1 || 1)) * 80));
+      // Swap 2 random adjacent pairs
+      for (let s = 0; s < Math.max(1, Math.floor(size / 6)); s++) {
+        const idx = Math.floor(Math.random() * (size - 1));
+        const tmp = arr[idx];
+        arr[idx] = arr[idx + 1];
+        arr[idx + 1] = tmp;
+      }
+    } else if (preset === 'few_unique') {
+      const distinct = [15, 38, 65, 90];
+      arr = Array.from({ length: size }, () => distinct[Math.floor(Math.random() * distinct.length)]);
+    } else {
+      // random
+      arr = Array.from({ length: size }, () => Math.floor(Math.random() * 90) + 10);
+    }
+    return arr;
+  }, [arraySize]);
+
+  // Load new array and generate steps
+  const loadNewArray = useCallback((arr, preset = 'random') => {
+    setIsPlaying(false);
+    clearInterval(playTimerRef.current);
+    setActivePreset(preset);
+    setInitialArray(arr);
+
+    const generated = generateSteps(selectedAlgorithm, arr);
+    setSteps(generated);
+    setCurrentStepIndex(0);
+  }, [selectedAlgorithm]);
+
+  // Re-generate when algorithm or preset changes
+  useEffect(() => {
+    const newArr = createPresetArray(activePreset, arraySize);
+    loadNewArray(newArr, activePreset);
+  }, [selectedAlgorithm, arraySize, activePreset, createPresetArray, loadNewArray]);
+
+  // Handle Playback step execution
+  const executeStep = useCallback((stepIdx) => {
+    if (stepIdx < 0 || stepIdx >= steps.length) return;
+    const step = steps[stepIdx];
+    setCurrentStepIndex(stepIdx);
+
+    // Audio tone
+    if (step && step.indices && step.indices.length > 0) {
+      const primaryIdx = step.indices[0];
+      const val = step.array[primaryIdx] || 50;
+      soundManager.playTone(val / 100, step.type);
+    }
+
+    // Check if step completed
+    if (stepIdx === steps.length - 1 && steps.length > 1) {
+      setIsPlaying(false);
+      clearInterval(playTimerRef.current);
+      confetti({ particleCount: 90, spread: 80, origin: { y: 0.6 } });
+      soundManager.playVictoryFanfare();
+      return;
+    }
+
+    // Check if Quiz Mode is ON and this step has a question
+    if (quizMode && step && step.quiz) {
+      setIsPlaying(false);
+      clearInterval(playTimerRef.current);
+      setActiveQuiz(step.quiz);
+      setIsQuizModalOpen(true);
+    }
+  }, [steps, quizMode]);
+
+  // Continuous playback effect
+  useEffect(() => {
+    if (!isPlaying) {
+      clearInterval(playTimerRef.current);
+      return;
+    }
+
+    const intervalMs = Math.max(15, Math.floor(1000 / speed));
+
+    playTimerRef.current = setInterval(() => {
+      setCurrentStepIndex((prev) => {
+        if (prev >= steps.length - 1) {
+          setIsPlaying(false);
+          clearInterval(playTimerRef.current);
+          confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+          soundManager.playVictoryFanfare();
+          return prev;
+        }
+
+        const next = prev + 1;
+        const step = steps[next];
+        if (step?.indices?.[0] !== undefined) {
+          const val = step.array[step.indices[0]] || 50;
+          soundManager.playTone(val / 100, step.type);
+        }
+
+        if (quizMode && step?.quiz) {
+          setIsPlaying(false);
+          clearInterval(playTimerRef.current);
+          setActiveQuiz(step.quiz);
+          setIsQuizModalOpen(true);
+        }
+
+        return next;
+      });
+    }, intervalMs);
+
+    return () => clearInterval(playTimerRef.current);
+  }, [isPlaying, speed, steps, quizMode]);
+
+  // Step Forward
+  const handleStepForward = () => {
+    if (currentStepIndex < steps.length - 1) {
+      executeStep(currentStepIndex + 1);
+    }
+  };
+
+  // Step Backward
+  const handleStepBack = () => {
+    if (currentStepIndex > 0) {
+      executeStep(currentStepIndex - 1);
+    }
+  };
+
+  // Next Pass (GCSE Exam Core Feature)
+  const handleNextPass = () => {
+    if (currentStepIndex >= steps.length - 1) return;
+    const currentPass = steps[currentStepIndex]?.pass ?? 0;
+    // Find next step where isPassEnd is true and pass > currentPass (or last step)
+    let targetIdx = -1;
+    for (let i = currentStepIndex + 1; i < steps.length; i++) {
+      if (steps[i].isPassEnd && steps[i].pass > currentPass) {
+        targetIdx = i;
+        break;
+      }
+    }
+    if (targetIdx === -1) {
+      targetIdx = steps.length - 1;
+    }
+    executeStep(targetIdx);
+  };
+
+  // Reset to step 0
+  const handleReset = () => {
+    setIsPlaying(false);
+    clearInterval(playTimerRef.current);
+    executeStep(0);
+  };
+
+  // Shuffle list
+  const handleShuffle = () => {
+    const newArr = createPresetArray('random', arraySize);
+    loadNewArray(newArr, 'random');
+  };
+
+  // Preset change
+  const handlePresetChange = (preset) => {
+    setActivePreset(preset);
+    const newArr = createPresetArray(preset, arraySize);
+    loadNewArray(newArr, preset);
+  };
+
+  // Custom Array modal submit
+  const handleCustomArraySubmit = (customArr) => {
+    setArraySize(customArr.length);
+    loadNewArray(customArr, 'custom');
+  };
+
+  // Audio cycle
+  const handleCycleAudio = () => {
+    const nextMode = soundManager.cycleMode();
+    setAudioMode(nextMode);
+  };
+
+  // Quiz Answer
+  const handleQuizAnswer = (isCorrect) => {
+    setQuizStats((prev) => ({
+      score: isCorrect ? prev.score + 1 : prev.score,
+      streak: isCorrect ? prev.streak + 1 : 0,
+      total: prev.total + 1,
+    }));
+  };
+
+  // Keyboard Shortcuts Listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't intercept if user is typing in an input
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+
+      if (e.code === 'Space') {
+        e.preventDefault();
+        setIsPlaying((p) => !p);
+      } else if (e.code === 'ArrowRight' || e.code === 'KeyS') {
+        e.preventDefault();
+        handleStepForward();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        handleStepBack();
+      } else if (e.code === 'KeyP') {
+        e.preventDefault();
+        handleNextPass();
+      } else if (e.code === 'KeyR') {
+        e.preventDefault();
+        handleReset();
+      } else if (e.code === 'KeyM') {
+        e.preventDefault();
+        handleCycleAudio();
+      } else if (e.code === 'KeyQ') {
+        e.preventDefault();
+        setQuizMode((q) => !q);
+      } else if (e.key === '?' || (e.shiftKey && e.code === 'Slash')) {
+        e.preventDefault();
+        setIsShortcutsOpen((o) => !o);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  });
+
+  const currentStep = steps[currentStepIndex] || {
+    array: initialArray,
+    indices: [],
+    sortedIndices: [],
+    type: 'initial',
+    variables: {},
+    codeLine: 1,
+    explanation: 'Ready',
+    comparisons: 0,
+    swaps: 0,
+  };
+
+  const isCompleted = currentStepIndex === steps.length - 1 && steps.length > 1;
+
+  return (
+    <div className={`min-h-screen flex flex-col font-sans transition-colors duration-200 ${
+      isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
+      {/* Top Navigation */}
+      <Navbar
+        activeView={activeView}
+        onViewChange={setActiveView}
+        visualizerMode={visualizerMode}
+        onVisualizerModeChange={setVisualizerMode}
+        selectedAlgorithm={selectedAlgorithm}
+        onAlgorithmChange={setSelectedAlgorithm}
+        isDarkMode={isDarkMode}
+        onToggleTheme={() => setIsDarkMode(!isDarkMode)}
+        audioMode={audioMode}
+        onCycleAudio={handleCycleAudio}
+        onOpenShortcuts={() => setIsShortcutsOpen(true)}
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 flex flex-col gap-6">
+        {activeView === 'visualizer' && (
+          <div className="flex flex-col gap-6">
+            {/* Visualizer Canvas Area */}
+            {visualizerMode === 'bars' ? (
+              <VisualizerBars
+                array={currentStep.array}
+                activeIndices={currentStep.indices}
+                sortedIndices={currentStep.sortedIndices}
+                stepType={currentStep.type}
+                sublistBounds={currentStep.sublistBounds}
+                isDarkMode={isDarkMode}
+              />
+            ) : (
+              <VisualizerImage
+                array={currentStep.array}
+                activeIndices={currentStep.indices}
+                sortedIndices={currentStep.sortedIndices}
+                stepType={currentStep.type}
+                isCompleted={isCompleted}
+                isDarkMode={isDarkMode}
+              />
+            )}
+
+            {/* Playback Controls & Timeline Toolbar */}
+            <ControlsToolbar
+              isPlaying={isPlaying}
+              onTogglePlay={() => setIsPlaying(!isPlaying)}
+              onStepBack={handleStepBack}
+              onStepForward={handleStepForward}
+              onNextPass={handleNextPass}
+              onReset={handleReset}
+              onShuffle={handleShuffle}
+              onPresetChange={handlePresetChange}
+              currentStepIndex={currentStepIndex}
+              totalSteps={steps.length}
+              onScrub={(idx) => executeStep(idx)}
+              speed={speed}
+              onSpeedChange={setSpeed}
+              arraySize={arraySize}
+              onArraySizeChange={setArraySize}
+              activePreset={activePreset}
+              onOpenCustomModal={() => setIsCustomModalOpen(true)}
+              audioMode={audioMode}
+              onCycleAudio={handleCycleAudio}
+              quizMode={quizMode}
+              onToggleQuizMode={() => setQuizMode(!quizMode)}
+              isDarkMode={isDarkMode}
+            />
+
+            {/* Side-by-Side GCSE Learning Lab: Exam Pseudocode & Pass-by-Pass Trace Table */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* 1. Official Exam Pseudocode Tracer */}
+              <PseudocodeTracer
+                algorithmId={selectedAlgorithm}
+                activeLine={currentStep.codeLine}
+                variables={currentStep.variables}
+                explanation={currentStep.explanation}
+                isDarkMode={isDarkMode}
+              />
+
+              {/* 2. Exam Pass-by-Pass Trace Table Generator */}
+              <TraceTable
+                steps={steps}
+                currentStepIndex={currentStepIndex}
+                onJumpToStep={(idx) => executeStep(idx)}
+                isDarkMode={isDarkMode}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* View 2: Split-Screen Race Mode */}
+        {activeView === 'race' && <RaceMode isDarkMode={isDarkMode} />}
+
+        {/* View 3: GCSE Revision Cards */}
+        {activeView === 'revision' && (
+          <RevisionCards activeAlgorithmId={selectedAlgorithm} isDarkMode={isDarkMode} />
+        )}
+      </main>
+
+      {/* Footer */}
+      <footer className={`w-full py-6 border-t text-center text-xs transition-colors ${
+        isDarkMode ? 'border-slate-800 text-slate-500 bg-slate-950/60' : 'border-slate-200 text-slate-500 bg-white/60'
+      }`}>
+        <p>
+          GCSE Computer Science Sorting Visualizer & Learning Lab • Built for OCR J277, AQA 8525 & Edexcel
+        </p>
+        <p className="mt-1 text-[11px] text-slate-400">
+          Client-side Web Audio synthesis • Zero server dependencies • Optimized for Chromebooks, iPads, and Laptops
+        </p>
+      </footer>
+
+      {/* Modals */}
+      <QuizModal
+        isOpen={isQuizModalOpen}
+        quiz={activeQuiz}
+        onClose={() => setIsQuizModalOpen(false)}
+        onAnswer={handleQuizAnswer}
+        quizStats={quizStats}
+        isDarkMode={isDarkMode}
+      />
+
+      <CustomArrayModal
+        isOpen={isCustomModalOpen}
+        onClose={() => setIsCustomModalOpen(false)}
+        onSubmit={handleCustomArraySubmit}
+        isDarkMode={isDarkMode}
+      />
+
+      <KeyboardShortcutsModal
+        isOpen={isShortcutsOpen}
+        onClose={() => setIsShortcutsOpen(false)}
+        isDarkMode={isDarkMode}
+      />
+    </div>
+  );
+}
