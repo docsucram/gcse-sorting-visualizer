@@ -107,7 +107,7 @@ export default function Navbar({
               >
                 {Object.values(ALGORITHMS).map((a) => (
                   <option key={a.id} value={a.id}>
-                    {a.name}
+                    {a.name} {a.aqaCore ? '★ [AQA Core]' : ''}
                   </option>
                 ))}
               </select>

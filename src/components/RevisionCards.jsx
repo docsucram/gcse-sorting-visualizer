@@ -1,10 +1,26 @@
 import React, { useState } from 'react';
-import { ALGORITHMS } from '../constants/algorithms';
-import { BookOpen, Check, X, HelpCircle, ChevronDown, ChevronUp, AlertTriangle, Lightbulb, Star } from 'lucide-react';
+import { ALGORITHMS, AQA_NINE_MARK_QUESTION, SYLLABUS_BOARDS } from '../constants/algorithms';
+import {
+  BookOpen,
+  Check,
+  X,
+  HelpCircle,
+  ChevronDown,
+  ChevronUp,
+  AlertTriangle,
+  Award,
+  Sparkles,
+  Star,
+  FileCheck2,
+  CheckCircle2,
+} from 'lucide-react';
 
 export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode = true }) {
   const [selectedAlgo, setSelectedAlgo] = useState(activeAlgorithmId);
+  const [syllabusFilter, setSyllabusFilter] = useState('all'); // 'all' | 'aqa' | 'ocr'
   const [revealedQuestions, setRevealedQuestions] = useState({});
+  const [showModelAnswer, setShowModelAnswer] = useState(false);
+  const [checklist, setChecklist] = useState({});
 
   const algo = ALGORITHMS[selectedAlgo] || ALGORITHMS.bubble;
 
@@ -15,13 +31,27 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
     }));
   };
 
+  const toggleChecklistItem = (idx) => {
+    setChecklist((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
+  };
+
+  // Filtered algorithms based on board
+  const displayedAlgos = Object.values(ALGORITHMS).filter((a) => {
+    if (syllabusFilter === 'aqa') return a.aqaCore;
+    if (syllabusFilter === 'ocr') return a.ocrCore;
+    return true;
+  });
+
   return (
     <div className="flex flex-col gap-6 w-full max-w-7xl mx-auto p-4 sm:p-6">
-      {/* Header and Algorithm Tabs */}
+      {/* Header and Syllabus Switcher */}
       <div className={`p-5 rounded-2xl border transition-colors ${
         isDarkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
       }`}>
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-5">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-4">
           <div className="flex items-center gap-2.5">
             <span className="p-2 rounded-xl bg-indigo-500/10 text-indigo-500">
               <BookOpen className="w-5 h-5" />
@@ -29,15 +59,32 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
             <div>
               <h2 className="text-lg font-bold">GCSE Computer Science Revision Lab</h2>
               <p className="text-xs text-slate-500 dark:text-slate-400">
-                Exam board specifications (OCR J277, AQA 8525, Edexcel), complexities, mark schemes, and common traps.
+                Exam board specifications (AQA 8525 & OCR J277), complexities, mark schemes, and essay scaffolds.
               </p>
             </div>
+          </div>
+
+          {/* Syllabus Board Filter */}
+          <div className="flex items-center p-1 rounded-xl bg-slate-800/80 border border-slate-700/60 text-xs font-semibold">
+            {Object.values(SYLLABUS_BOARDS).map((board) => (
+              <button
+                key={board.id}
+                onClick={() => setSyllabusFilter(board.id)}
+                className={`px-3 py-1.5 rounded-lg transition-all ${
+                  syllabusFilter === board.id
+                    ? 'bg-indigo-600 text-white shadow-2xs font-bold'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {board.label}
+              </button>
+            ))}
           </div>
         </div>
 
         {/* Algorithm Selection Pills */}
         <div className="flex flex-wrap gap-2">
-          {Object.values(ALGORITHMS).map((a) => (
+          {displayedAlgos.map((a) => (
             <button
               key={a.id}
               onClick={() => {
@@ -53,6 +100,11 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
               }`}
             >
               <span>{a.name}</span>
+              {a.aqaCore && (
+                <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-emerald-500/20 text-emerald-300 font-bold">
+                  AQA Core
+                </span>
+              )}
             </button>
           ))}
         </div>
@@ -65,11 +117,18 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
           isDarkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
         }`}>
           <div>
-            <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider block">
-              {algo.category}
-            </span>
-            <h3 className="text-xl font-bold mt-0.5">{algo.name}</h3>
-            <p className="text-xs text-slate-400 mt-1">{algo.examBoardRelevance}</p>
+            <div className="flex items-center gap-1.5 mb-1">
+              <span className="text-[11px] font-bold text-indigo-500 uppercase tracking-wider block">
+                {algo.category}
+              </span>
+              {algo.aqaCore && (
+                <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 text-[10px] font-bold border border-emerald-500/30">
+                  AQA 8525 Core
+                </span>
+              )}
+            </div>
+            <h3 className="text-xl font-bold">{algo.name}</h3>
+            <p className="text-xs text-slate-400 mt-0.5">{algo.examBoardRelevance}</p>
           </div>
 
           <div className="space-y-2.5">
@@ -111,7 +170,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
           <div className="p-3 rounded-xl bg-slate-800/30 text-xs space-y-1.5 text-slate-300">
             <p><strong>Best Case:</strong> {algo.complexityNotes.best}</p>
             <p><strong>Worst Case:</strong> {algo.complexityNotes.worst}</p>
-            <p><strong>Space / Memory:</strong> {algo.complexityNotes.space}</p>
+            <p><strong>Space / RAM:</strong> {algo.complexityNotes.space}</p>
           </div>
         </div>
 
@@ -198,6 +257,119 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
         </div>
       </div>
 
+      {/* AQA 9-Mark Extended Response Scenario & Evaluation Guide */}
+      <div className={`p-5 sm:p-6 rounded-2xl border transition-colors ${
+        isDarkMode ? 'bg-gradient-to-br from-slate-900 via-slate-900 to-indigo-950/40 border-indigo-500/40' : 'bg-gradient-to-br from-white via-slate-50 to-indigo-50/50 border-indigo-200 shadow-sm'
+      }`}>
+        <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
+          <div className="flex items-center gap-2">
+            <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400">
+              <Award className="w-5 h-5" />
+            </span>
+            <div>
+              <h3 className="font-bold text-base text-slate-100">
+                {AQA_NINE_MARK_QUESTION.title}
+              </h3>
+              <p className="text-xs text-slate-400">
+                Evaluation masterclass: Bubble Sort vs Merge Sort in real-world scenarios
+              </p>
+            </div>
+          </div>
+
+          <span className="px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-xs flex items-center gap-1">
+            <Sparkles className="w-3.5 h-3.5" />
+            9 Marks High-Tariff
+          </span>
+        </div>
+
+        {/* Scenario Box */}
+        <div className="p-4 rounded-xl bg-slate-950/60 border border-slate-800 text-xs leading-relaxed text-slate-300 mb-5">
+          <strong className="block text-indigo-400 font-bold mb-1.5 uppercase tracking-wider text-[11px]">
+            Exam Scenario:
+          </strong>
+          <pre className="whitespace-pre-line font-sans m-0">
+            {AQA_NINE_MARK_QUESTION.scenario}
+          </pre>
+        </div>
+
+        {/* Analysis breakdown for System A vs System B */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-5">
+          {AQA_NINE_MARK_QUESTION.keyPoints.map((item, idx) => (
+            <div
+              key={idx}
+              className={`p-4 rounded-xl border text-xs ${
+                isDarkMode ? 'bg-slate-800/40 border-slate-700/60' : 'bg-white border-slate-200'
+              }`}
+            >
+              <h4 className="font-bold text-sm text-slate-100 mb-1">{item.topic}</h4>
+              <span className="inline-block px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-semibold text-[11px] mb-2.5">
+                {item.recommendation}
+              </span>
+              <ul className="space-y-1.5 text-slate-300 list-disc list-inside">
+                {item.reasons.map((r, rIdx) => (
+                  <li key={rIdx}>{r}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Interactive Self-Assessment Checklist */}
+        <div className="p-4 rounded-xl bg-slate-800/30 border border-slate-700/50 mb-4 text-xs">
+          <h4 className="font-bold text-slate-200 mb-2 flex items-center gap-1.5">
+            <FileCheck2 className="w-4 h-4 text-indigo-400" />
+            <span>Examiner Criteria Checklist (Level 3 Band)</span>
+          </h4>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-slate-300">
+            {[
+              'Analyzed time complexity of both Bubble Sort O(n²) and Merge Sort O(n log n)',
+              'Addressed System A hardware: 2 KB RAM demands O(1) in-place Bubble Sort',
+              'Analyzed recursive stack overhead risk on 2 KB microcontroller',
+              'Addressed System B scale: 250,000 records requires Merge Sort to avoid freeze',
+              'Noted server has sufficient RAM to accommodate Merge Sort O(n) auxiliary list',
+              'Reached clear, justified final conclusions for both systems',
+            ].map((crit, cIdx) => (
+              <label
+                key={cIdx}
+                className="flex items-start gap-2 p-2 rounded-lg bg-slate-900/40 border border-slate-800 cursor-pointer hover:bg-slate-900/70 transition-colors"
+              >
+                <input
+                  type="checkbox"
+                  checked={!!checklist[cIdx]}
+                  onChange={() => toggleChecklistItem(cIdx)}
+                  className="mt-0.5 accent-indigo-500 rounded"
+                />
+                <span className={checklist[cIdx] ? 'line-through text-slate-500' : 'text-slate-300'}>
+                  {crit}
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+
+        {/* Reveal Exemplar Model Answer */}
+        <div>
+          <button
+            onClick={() => setShowModelAnswer(!showModelAnswer)}
+            className="w-full py-2.5 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs sm:text-sm transition-colors flex items-center justify-center gap-2 shadow-md shadow-indigo-600/30"
+          >
+            <CheckCircle2 className="w-4 h-4" />
+            <span>{showModelAnswer ? 'Hide Exemplar 9-Mark Model Answer' : 'Reveal Full 9/9 Mark Model Answer'}</span>
+          </button>
+
+          {showModelAnswer && (
+            <div className="mt-3 p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-xs sm:text-sm text-emerald-100 leading-relaxed animate-in fade-in">
+              <strong className="block text-emerald-400 font-bold mb-2">
+                Level 3 (9/9 Marks) Exemplar Model Essay:
+              </strong>
+              <p className="whitespace-pre-line text-slate-200">
+                {AQA_NINE_MARK_QUESTION.modelAnswer}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
       {/* Global GCSE Comparison Table */}
       <div className={`p-5 rounded-2xl border transition-colors ${
         isDarkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
@@ -211,17 +383,33 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
             <thead>
               <tr className="border-b border-slate-800 text-slate-400">
                 <th className="py-2.5 px-3 font-semibold">Algorithm</th>
+                <th className="py-2.5 px-3 font-semibold">Syllabus Core</th>
                 <th className="py-2.5 px-3 font-semibold">Best Time</th>
                 <th className="py-2.5 px-3 font-semibold">Average Time</th>
                 <th className="py-2.5 px-3 font-semibold">Worst Time</th>
-                <th className="py-2.5 px-3 font-semibold">Space (Memory)</th>
+                <th className="py-2.5 px-3 font-semibold">Space (RAM)</th>
                 <th className="py-2.5 px-3 font-semibold">Stable?</th>
               </tr>
             </thead>
             <tbody>
               {Object.values(ALGORITHMS).map((a) => (
                 <tr key={a.id} className="border-b border-slate-800/60 hover:bg-slate-800/30 transition-colors">
-                  <td className="py-2.5 px-3 font-sans font-bold text-slate-200">{a.name}</td>
+                  <td className="py-2.5 px-3 font-sans font-bold text-slate-200 flex items-center gap-1.5">
+                    {a.name}
+                  </td>
+                  <td className="py-2.5 px-3 font-sans">
+                    {a.aqaCore ? (
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold text-[10px]">
+                        AQA & OCR
+                      </span>
+                    ) : a.ocrCore ? (
+                      <span className="px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 font-bold text-[10px]">
+                        OCR J277
+                      </span>
+                    ) : (
+                      <span className="text-slate-500 text-[10px]">Extension</span>
+                    )}
+                  </td>
                   <td className="py-2.5 px-3 text-emerald-400 font-bold">{a.complexity.bestTime}</td>
                   <td className="py-2.5 px-3 text-amber-400 font-bold">{a.complexity.averageTime}</td>
                   <td className="py-2.5 px-3 text-rose-400 font-bold">{a.complexity.worstTime}</td>

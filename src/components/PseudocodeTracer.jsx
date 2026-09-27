@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ALGORITHMS } from '../constants/algorithms';
-import { Code2, Variable, Info } from 'lucide-react';
+import { Code2, Variable, Info, CheckCircle2 } from 'lucide-react';
 
 export default function PseudocodeTracer({
   algorithmId = 'bubble',
@@ -9,9 +9,13 @@ export default function PseudocodeTracer({
   explanation = '',
   isDarkMode = true,
 }) {
+  const [language, setLanguage] = useState('pseudocode'); // 'pseudocode' | 'python' | 'csharp' | 'vbnet'
   const algo = ALGORITHMS[algorithmId] || ALGORITHMS.bubble;
-  const pseudocode = algo.pseudocode || [];
   const activeLineRef = useRef(null);
+
+  // Available language snippets for this algorithm
+  const codeSnippets = algo.codeSnippets || { pseudocode: algo.pseudocode || [] };
+  const currentLines = codeSnippets[language] || codeSnippets.pseudocode || algo.pseudocode || [];
 
   useEffect(() => {
     if (activeLineRef.current) {
@@ -25,26 +29,57 @@ export default function PseudocodeTracer({
   // Clean formatted variables
   const varEntries = Object.entries(variables).filter(([k, v]) => v !== undefined && k !== 'message');
 
+  const languageOptions = [
+    { id: 'pseudocode', label: 'Exam Pseudocode' },
+    { id: 'python', label: 'Python 3 (8525/1A)' },
+    { id: 'csharp', label: 'C# (8525/1B)' },
+    { id: 'vbnet', label: 'VB.NET (8525/1C)' },
+  ];
+
   return (
     <div className={`flex flex-col h-full rounded-2xl border transition-colors ${
       isDarkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
     }`}>
       {/* Header */}
-      <div className={`flex items-center justify-between px-4 py-3 border-b text-xs font-semibold ${
+      <div className={`flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b text-xs font-semibold ${
         isDarkMode ? 'border-slate-800 text-slate-300' : 'border-slate-100 text-slate-700'
       }`}>
         <div className="flex items-center gap-2">
           <Code2 className="w-4 h-4 text-indigo-500" />
-          <span>Official GCSE Exam Pseudocode (OCR / AQA)</span>
+          <span>Code & Pseudocode Tracer</span>
+          {algo.aqaCore && (
+            <span className="px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 text-[10px] font-bold flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3" />
+              AQA 8525 Core
+            </span>
+          )}
         </div>
-        <span className="px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 text-[10px] font-bold uppercase tracking-wider">
-          Live Tracer
-        </span>
+
+        {/* Language Switcher for AQA Paper 1 */}
+        <div className="flex items-center p-0.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-[11px]">
+          {languageOptions.map((opt) => {
+            const isAvailable = !!codeSnippets[opt.id];
+            if (!isAvailable) return null;
+            return (
+              <button
+                key={opt.id}
+                onClick={() => setLanguage(opt.id)}
+                className={`px-2 py-1 rounded-md transition-all font-sans ${
+                  language === opt.id
+                    ? 'bg-indigo-600 text-white font-bold shadow-2xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                {opt.label}
+              </button>
+            );
+          })}
+        </div>
       </div>
 
       {/* Code Editor Body */}
       <div className="flex-1 p-3 overflow-y-auto max-h-[340px] font-mono text-xs sm:text-[13px] leading-relaxed">
-        {pseudocode.map((lineObj) => {
+        {currentLines.map((lineObj) => {
           const isActive = lineObj.line === activeLine;
           return (
             <div
@@ -79,7 +114,7 @@ export default function PseudocodeTracer({
       }`}>
         <div className="flex items-center gap-1.5 text-xs font-semibold mb-2 text-slate-500 dark:text-slate-400">
           <Variable className="w-3.5 h-3.5 text-amber-500" />
-          <span>Variable Inspector</span>
+          <span>Live Variable Inspector (AQA Paper 1 Trace)</span>
         </div>
         <div className="flex flex-wrap gap-1.5">
           {varEntries.length > 0 ? (
