@@ -218,7 +218,9 @@ export default function RaceMode({ isDarkMode = true }) {
             )}
           </div>
 
-          <div className="w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden bg-slate-950/40 p-1 border border-slate-800/40">
+          <div className={`w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden p-1 border ${
+            isDarkMode ? 'bg-slate-950/40 border-slate-800/40' : 'bg-slate-50 border-slate-200'
+          }`}>
             <VisualizerBars
               array={currentStep1.array}
               activeIndices={currentStep1.indices}
@@ -231,14 +233,28 @@ export default function RaceMode({ isDarkMode = true }) {
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-2 gap-2 text-center text-xs pt-2 border-t border-slate-800/40">
-            <div className="p-2 rounded-xl bg-slate-800/40">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Comparisons</span>
-              <span className="text-sm font-mono font-bold text-amber-400">{currentStep1.comparisons}</span>
+          <div className={`grid grid-cols-2 gap-2 text-center text-xs pt-2 border-t ${
+            isDarkMode ? 'border-slate-800/40' : 'border-slate-200'
+          }`}>
+            <div className={`p-2 rounded-xl border ${
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <span className={`block text-[10px] uppercase font-bold ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>Comparisons</span>
+              <span className={`text-sm font-mono font-bold ${
+                isDarkMode ? 'text-amber-400' : 'text-amber-700'
+              }`}>{currentStep1.comparisons}</span>
             </div>
-            <div className="p-2 rounded-xl bg-slate-800/40">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Swaps / Writes</span>
-              <span className="text-sm font-mono font-bold text-rose-400">{currentStep1.swaps}</span>
+            <div className={`p-2 rounded-xl border ${
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <span className={`block text-[10px] uppercase font-bold ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>Swaps / Writes</span>
+              <span className={`text-sm font-mono font-bold ${
+                isDarkMode ? 'text-rose-400' : 'text-rose-700'
+              }`}>{currentStep1.swaps}</span>
             </div>
           </div>
         </div>
@@ -278,7 +294,9 @@ export default function RaceMode({ isDarkMode = true }) {
             )}
           </div>
 
-          <div className="w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden bg-slate-950/40 p-1 border border-slate-800/40">
+          <div className={`w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden p-1 border ${
+            isDarkMode ? 'bg-slate-950/40 border-slate-800/40' : 'bg-slate-50 border-slate-200'
+          }`}>
             <VisualizerBars
               array={currentStep2.array}
               activeIndices={currentStep2.indices}
@@ -291,14 +309,28 @@ export default function RaceMode({ isDarkMode = true }) {
           </div>
 
           {/* Stats Bar */}
-          <div className="grid grid-cols-2 gap-2 text-center text-xs pt-2 border-t border-slate-800/40">
-            <div className="p-2 rounded-xl bg-slate-800/40">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Comparisons</span>
-              <span className="text-sm font-mono font-bold text-amber-400">{currentStep2.comparisons}</span>
+          <div className={`grid grid-cols-2 gap-2 text-center text-xs pt-2 border-t ${
+            isDarkMode ? 'border-slate-800/40' : 'border-slate-200'
+          }`}>
+            <div className={`p-2 rounded-xl border ${
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <span className={`block text-[10px] uppercase font-bold ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>Comparisons</span>
+              <span className={`text-sm font-mono font-bold ${
+                isDarkMode ? 'text-amber-400' : 'text-amber-700'
+              }`}>{currentStep2.comparisons}</span>
             </div>
-            <div className="p-2 rounded-xl bg-slate-800/40">
-              <span className="text-slate-400 block text-[10px] uppercase font-bold">Swaps / Writes</span>
-              <span className="text-sm font-mono font-bold text-rose-400">{currentStep2.swaps}</span>
+            <div className={`p-2 rounded-xl border ${
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+            }`}>
+              <span className={`block text-[10px] uppercase font-bold ${
+                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+              }`}>Swaps / Writes</span>
+              <span className={`text-sm font-mono font-bold ${
+                isDarkMode ? 'text-rose-400' : 'text-rose-700'
+              }`}>{currentStep2.swaps}</span>
             </div>
           </div>
         </div>

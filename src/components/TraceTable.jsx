@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Table, Copy, Check, Filter } from 'lucide-react';
+import { Table, Copy, Check } from 'lucide-react';
 
 export default function TraceTable({
   steps = [],
@@ -68,13 +68,17 @@ export default function TraceTable({
 
         {/* View Toggle: Pass-by-Pass vs AQA Variable Grid */}
         <div className="flex items-center gap-2">
-          <div className="flex items-center p-0.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-[11px]">
+          <div className={`flex items-center p-0.5 rounded-lg border text-[11px] ${
+            isDarkMode ? 'bg-slate-800/80 border-slate-700/60' : 'bg-slate-100 border-slate-200'
+          }`}>
             <button
               onClick={() => setTableMode('pass')}
               className={`px-2 py-1 rounded-md transition-all ${
                 tableMode === 'pass'
                   ? 'bg-emerald-600 text-white font-bold shadow-2xs'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : isDarkMode
+                  ? 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Pass-by-Pass
@@ -84,7 +88,9 @@ export default function TraceTable({
               className={`px-2 py-1 rounded-md transition-all ${
                 tableMode === 'aqa_variable'
                   ? 'bg-emerald-600 text-white font-bold shadow-2xs'
-                  : 'text-slate-400 hover:text-slate-200'
+                  : isDarkMode
+                  ? 'text-slate-400 hover:text-slate-200'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
               title="AQA Paper 1 variable-by-variable mark-scheme grid"
             >
@@ -99,7 +105,7 @@ export default function TraceTable({
                 ? 'bg-emerald-500/20 text-emerald-500'
                 : isDarkMode
                 ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
-                : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
             title="Copy trace table formatted as Markdown for homework or notes"
           >
@@ -117,7 +123,7 @@ export default function TraceTable({
             <table className="w-full text-left text-xs font-mono border-collapse">
               <thead>
                 <tr className={`border-b ${
-                  isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-500'
+                  isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-600 font-bold'
                 }`}>
                   <th className="py-2 px-2.5 font-semibold">Pass</th>
                   <th className="py-2 px-2.5 font-semibold">Array State</th>
@@ -139,26 +145,26 @@ export default function TraceTable({
                         isActiveRow
                           ? isDarkMode
                             ? 'bg-emerald-950/40 text-emerald-200 font-semibold'
-                            : 'bg-emerald-50/80 text-emerald-900 font-semibold'
+                            : 'bg-emerald-50/80 text-emerald-950 font-bold'
                           : isDarkMode
                           ? 'border-slate-800/60 hover:bg-slate-800/40 text-slate-300'
-                          : 'border-slate-100 hover:bg-slate-50 text-slate-700'
+                          : 'border-slate-100 hover:bg-slate-50 text-slate-800'
                       }`}
                     >
                       <td className="py-2 px-2.5 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-bold ${
                           s.pass === 0
-                            ? 'bg-slate-500/10 text-slate-500'
+                            ? isDarkMode ? 'bg-slate-500/10 text-slate-500' : 'bg-slate-100 text-slate-600'
                             : isActiveRow
-                            ? 'bg-emerald-500/20 text-emerald-400'
-                            : 'bg-indigo-500/10 text-indigo-400'
+                            ? isDarkMode ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-800'
+                            : isDarkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-100 text-indigo-800'
                         }`}>
                           {s.pass === 0 ? 'Initial' : `Pass ${s.pass}`}
                         </span>
                       </td>
                       <td className="py-2 px-2.5 whitespace-nowrap">
                         <div className="flex items-center gap-1">
-                          <span className="text-slate-400">[</span>
+                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>[</span>
                           {s.array.map((num, i) => {
                             const isSortedInThisStep = s.sortedIndices?.includes(i);
                             return (
@@ -166,7 +172,9 @@ export default function TraceTable({
                                 key={i}
                                 className={`px-1 rounded ${
                                   isSortedInThisStep
-                                    ? 'bg-emerald-500/20 text-emerald-400 font-bold'
+                                    ? isDarkMode
+                                      ? 'bg-emerald-500/20 text-emerald-400 font-bold'
+                                      : 'bg-emerald-100 text-emerald-800 font-bold'
                                     : ''
                                 }`}
                               >
@@ -175,16 +183,18 @@ export default function TraceTable({
                               </span>
                             );
                           })}
-                          <span className="text-slate-400">]</span>
+                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>]</span>
                         </div>
                       </td>
-                      <td className="py-2 px-2 text-center text-slate-400">
+                      <td className={`py-2 px-2 text-center font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                         {s.comparisons}
                       </td>
-                      <td className="py-2 px-2 text-center text-slate-400">
+                      <td className={`py-2 px-2 text-center font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
                         {s.swaps}
                       </td>
-                      <td className="py-2 px-2.5 font-sans text-xs text-slate-500 dark:text-slate-400 max-w-xs truncate" title={s.explanation}>
+                      <td className={`py-2 px-2.5 font-sans text-xs max-w-xs truncate ${
+                        isDarkMode ? 'text-slate-400' : 'text-slate-700'
+                      }`} title={s.explanation}>
                         {s.explanation}
                       </td>
                     </tr>
@@ -202,7 +212,7 @@ export default function TraceTable({
           <table className="w-full text-left text-xs font-mono border-collapse">
             <thead>
               <tr className={`border-b ${
-                isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-500'
+                isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-600 font-bold'
               }`}>
                 <th className="py-2 px-2 font-semibold text-center">Line</th>
                 <th className="py-2 px-2 font-semibold text-center">j</th>
@@ -231,38 +241,44 @@ export default function TraceTable({
                       isCurrent
                         ? isDarkMode
                           ? 'bg-emerald-950/40 text-emerald-200 font-semibold'
-                          : 'bg-emerald-50/80 text-emerald-900 font-semibold'
+                          : 'bg-emerald-50/80 text-emerald-950 font-bold'
                         : isDarkMode
                         ? 'border-slate-800/60 hover:bg-slate-800/40 text-slate-300'
-                        : 'border-slate-100 hover:bg-slate-50 text-slate-700'
+                        : 'border-slate-100 hover:bg-slate-50 text-slate-800'
                     }`}
                   >
-                    <td className="py-1.5 px-2 text-center text-indigo-400 font-bold">
+                    <td className={`py-1.5 px-2 text-center font-bold ${isDarkMode ? 'text-indigo-400' : 'text-indigo-700'}`}>
                       {s.codeLine}
                     </td>
-                    <td className="py-1.5 px-2 text-center text-amber-300">
+                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-amber-300' : 'text-amber-800'}`}>
                       {jVal !== '' ? jVal : '—'}
                     </td>
                     <td className="py-1.5 px-2 text-center">
                       {condVal ? (
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
-                          condVal === 'True' ? 'bg-rose-500/20 text-rose-300' : 'bg-slate-700/60 text-slate-300'
+                          condVal === 'True'
+                            ? (isDarkMode ? 'bg-rose-500/20 text-rose-300' : 'bg-rose-100 text-rose-800')
+                            : (isDarkMode ? 'bg-slate-700/60 text-slate-300' : 'bg-slate-100 text-slate-700')
                         }`}>
                           {condVal}
                         </span>
                       ) : '—'}
                     </td>
-                    <td className="py-1.5 px-2 text-center text-purple-300">
+                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-purple-300' : 'text-purple-800'}`}>
                       {tempVal !== '' ? tempVal : '—'}
                     </td>
                     <td className="py-1.5 px-2 text-center">
                       {swappedVal !== '' ? (
-                        <span className={`text-[11px] font-bold ${swappedVal === 'True' ? 'text-amber-400' : 'text-slate-500'}`}>
+                        <span className={`text-[11px] font-bold ${
+                          swappedVal === 'True'
+                            ? (isDarkMode ? 'text-amber-400' : 'text-amber-700')
+                            : (isDarkMode ? 'text-slate-500' : 'text-slate-400')
+                        }`}>
                           {swappedVal}
                         </span>
                       ) : '—'}
                     </td>
-                    <td className="py-1.5 px-2 whitespace-nowrap text-slate-300">
+                    <td className={`py-1.5 px-2 whitespace-nowrap ${isDarkMode ? 'text-slate-300' : 'text-slate-800'}`}>
                       [{s.array.join(', ')}]
                     </td>
                   </tr>
@@ -274,8 +290,8 @@ export default function TraceTable({
       </div>
 
       {/* Footer tip */}
-      <div className={`p-2.5 px-4 border-t text-[11px] text-slate-500 dark:text-slate-400 flex items-center justify-between ${
-        isDarkMode ? 'border-slate-800 bg-slate-950/20' : 'border-slate-100 bg-slate-50/50'
+      <div className={`p-2.5 px-4 border-t text-[11px] flex items-center justify-between ${
+        isDarkMode ? 'border-slate-800 bg-slate-950/20 text-slate-400' : 'border-slate-100 bg-slate-50/70 text-slate-600 font-medium'
       }`}>
         <span>
           {tableMode === 'aqa_variable'

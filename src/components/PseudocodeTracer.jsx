@@ -56,7 +56,9 @@ export default function PseudocodeTracer({
         </div>
 
         {/* Language Switcher for AQA Paper 1 */}
-        <div className="flex items-center p-0.5 rounded-lg bg-slate-800/80 border border-slate-700/60 text-[11px]">
+        <div className={`flex items-center p-0.5 rounded-lg border text-[11px] ${
+          isDarkMode ? 'bg-slate-800/80 border-slate-700/60' : 'bg-slate-100 border-slate-200'
+        }`}>
           {languageOptions.map((opt) => {
             const isAvailable = !!codeSnippets[opt.id];
             if (!isAvailable) return null;
@@ -67,7 +69,9 @@ export default function PseudocodeTracer({
                 className={`px-2 py-1 rounded-md transition-all font-sans ${
                   language === opt.id
                     ? 'bg-indigo-600 text-white font-bold shadow-2xs'
-                    : 'text-slate-400 hover:text-slate-200'
+                    : isDarkMode
+                    ? 'text-slate-400 hover:text-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 {opt.label}

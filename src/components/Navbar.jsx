@@ -53,13 +53,17 @@ export default function Navbar({
         </div>
 
         {/* View Switcher Tabs (Visualizer | Race | Revision) */}
-        <nav className="flex items-center p-1 rounded-xl bg-slate-800/60 dark:bg-slate-900 border border-slate-700/60 text-xs font-semibold">
+        <nav className={`flex items-center p-1 rounded-xl border text-xs font-semibold ${
+          isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+        }`}>
           <button
             onClick={() => onViewChange('visualizer')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
               activeView === 'visualizer'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-indigo-600 text-white shadow-2xs font-bold'
+                : isDarkMode
+                ? 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <BarChart3 className="w-3.5 h-3.5" />
@@ -70,8 +74,10 @@ export default function Navbar({
             onClick={() => onViewChange('race')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
               activeView === 'race'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-indigo-600 text-white shadow-2xs font-bold'
+                : isDarkMode
+                ? 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <Swords className="w-3.5 h-3.5" />
@@ -82,8 +88,10 @@ export default function Navbar({
             onClick={() => onViewChange('revision')}
             className={`px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 ${
               activeView === 'revision'
-                ? 'bg-indigo-600 text-white shadow-2xs'
-                : 'text-slate-400 hover:text-slate-200'
+                ? 'bg-indigo-600 text-white shadow-2xs font-bold'
+                : isDarkMode
+                ? 'text-slate-400 hover:text-slate-200'
+                : 'text-slate-600 hover:text-slate-900 font-medium'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -102,7 +110,7 @@ export default function Navbar({
                 className={`text-xs font-bold px-2.5 py-1.5 rounded-xl border outline-hidden transition-colors cursor-pointer ${
                   isDarkMode
                     ? 'bg-slate-800 border-slate-700 text-white hover:bg-slate-750'
-                    : 'bg-slate-50 border-slate-200 text-slate-900 hover:bg-slate-100'
+                    : 'bg-white border-slate-200 text-slate-900 hover:bg-slate-50 shadow-2xs'
                 }`}
               >
                 {Object.values(ALGORITHMS).map((a) => (
@@ -113,13 +121,17 @@ export default function Navbar({
               </select>
 
               {/* Mode A (Bars) vs Mode B (Image Slices) */}
-              <div className="flex items-center p-0.5 rounded-xl bg-slate-800/60 dark:bg-slate-900 border border-slate-700/60 text-xs">
+              <div className={`flex items-center p-0.5 rounded-xl border text-xs ${
+                isDarkMode ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+              }`}>
                 <button
                   onClick={() => onVisualizerModeChange('bars')}
                   className={`p-1.5 rounded-lg transition-all ${
                     visualizerMode === 'bars'
                       ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'text-slate-400 hover:text-slate-200'
+                      : isDarkMode
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                   title="Mode A: Sleek Animated Bars"
                 >
@@ -130,7 +142,9 @@ export default function Navbar({
                   className={`p-1.5 rounded-lg transition-all ${
                     visualizerMode === 'image'
                       ? 'bg-indigo-600 text-white shadow-2xs'
-                      : 'text-slate-400 hover:text-slate-200'
+                      : isDarkMode
+                      ? 'text-slate-400 hover:text-slate-200'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                   title="Mode B: Vertical Image Slice Sorting"
                 >
