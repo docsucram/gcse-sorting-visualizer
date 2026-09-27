@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function VisualizerBars({
   array = [],
@@ -8,12 +8,32 @@ export default function VisualizerBars({
   sublistBounds = null,
   isDarkMode = true,
   maxVal = 100,
+  className = '',
 }) {
   const containerRef = useRef(null);
   const canvasRef = useRef(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   const sortedSet = new Set(sortedIndices);
   const activeSet = new Set(activeIndices);
+
+  // ResizeObserver to track container size accurately
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          setDimensions({ width: Math.floor(width), height: Math.floor(height) });
+        }
+      }
+    });
+
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -22,12 +42,14 @@ export default function VisualizerBars({
 
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
-    const rect = container.getBoundingClientRect();
-    const width = rect.width;
-    const height = Math.max(300, rect.height || 420);
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    // Use observed dimensions or fallback to bounding client rect
+    const rect = container.getBoundingClientRect();
+    const width = dimensions.width || Math.floor(rect.width) || 400;
+    const height = dimensions.height || Math.floor(rect.height) || 280;
+
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
@@ -35,15 +57,16 @@ export default function VisualizerBars({
     ctx.clearRect(0, 0, width, height);
 
     const n = array.length;
-    const paddingX = 16;
+    const paddingX = Math.max(8, Math.min(16, width * 0.03));
     const availableWidth = width - paddingX * 2;
     const slotWidth = availableWidth / n;
-    const barGap = n > 80 ? 1 : (n > 40 ? 2 : (n > 20 ? 4 : 6));
+    const barGap = n > 80 ? 1 : (n > 40 ? 2 : (n > 20 ? 3 : 4));
     const barWidth = Math.max(2, slotWidth - barGap);
 
-    const paddingTop = 36;
-    const paddingBottom = n <= 35 ? 36 : 14;
-    const maxBarHeight = height - paddingTop - paddingBottom;
+    // Dynamic padding so bars stay strictly inside the container
+    const paddingTop = 26;
+    const paddingBottom = n <= 16 ? 26 : (n <= 35 ? 20 : 10);
+    const maxBarHeight = Math.max(15, height - paddingTop - paddingBottom);
     const highest = Math.max(...array, maxVal || 1);
 
     // 1. Draw sublist bounds highlight (for Merge and Quick sort)
@@ -54,21 +77,21 @@ export default function VisualizerBars({
       ctx.strokeStyle = isDarkMode ? 'rgba(129, 140, 248, 0.35)' : 'rgba(99, 102, 241, 0.4)';
       ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 4]);
-      ctx.fillRect(leftX - 2, paddingTop - 12, rightX - leftX + 4, maxBarHeight + 24);
-      ctx.strokeRect(leftX - 2, paddingTop - 12, rightX - leftX + 4, maxBarHeight + 24);
+      ctx.fillRect(leftX - 1, paddingTop - 8, rightX - leftX + 2, maxBarHeight + 16);
+      ctx.strokeRect(leftX - 1, paddingTop - 8, rightX - leftX + 2, maxBarHeight + 16);
       ctx.setLineDash([]);
 
       // Label sublist
       ctx.fillStyle = isDarkMode ? '#a5b4fc' : '#4f46e5';
-      ctx.font = '600 11px system-ui, sans-serif';
+      ctx.font = '600 10px system-ui, sans-serif';
       ctx.textAlign = 'left';
-      ctx.fillText(`Active Subarray [${sublistBounds.left}..${sublistBounds.right}]`, leftX + 4, paddingTop - 16);
+      ctx.fillText(`Subarray [${sublistBounds.left}..${sublistBounds.right}]`, leftX + 2, paddingTop - 12);
     }
 
     // 2. Draw Bars
     for (let i = 0; i < n; i++) {
       const val = array[i];
-      const barHeight = Math.max(10, (val / highest) * maxBarHeight);
+      const barHeight = Math.max(6, (val / highest) * maxBarHeight);
       const x = paddingX + i * slotWidth + barGap / 2;
       const y = height - paddingBottom - barHeight;
 
@@ -109,7 +132,7 @@ export default function VisualizerBars({
       ctx.save();
       if (glowColor) {
         ctx.shadowColor = glowColor;
-        ctx.shadowBlur = 12;
+        ctx.shadowBlur = 10;
       }
 
       const grad = ctx.createLinearGradient(x, y, x, y + barHeight);
@@ -118,7 +141,7 @@ export default function VisualizerBars({
       ctx.fillStyle = grad;
 
       // Rounded bar top
-      const radius = Math.min(barWidth / 2, 6);
+      const radius = Math.min(barWidth / 2, 5);
       ctx.beginPath();
       ctx.moveTo(x, y + barHeight);
       ctx.lineTo(x, y + radius);
@@ -134,9 +157,9 @@ export default function VisualizerBars({
       if (isActive) {
         ctx.fillStyle = gradTop;
         ctx.beginPath();
-        const markerSize = Math.min(10, barWidth);
+        const markerSize = Math.min(8, barWidth);
         const markerCenterX = x + barWidth / 2;
-        const markerY = y - 4;
+        const markerY = y - 3;
         ctx.moveTo(markerCenterX, markerY);
         ctx.lineTo(markerCenterX - markerSize / 2, markerY - markerSize);
         ctx.lineTo(markerCenterX + markerSize / 2, markerY - markerSize);
@@ -144,28 +167,37 @@ export default function VisualizerBars({
         ctx.fill();
       }
 
-      // Draw value text if bar is wide enough
-      if (n <= 35) {
-        ctx.fillStyle = isDarkMode ? '#f3f4f6' : '#1f2937';
-        ctx.font = `600 ${n <= 15 ? 13 : 11}px system-ui, sans-serif`;
+      // Draw value text inside or above bar only if there is sufficient width
+      if (barWidth >= 18) {
+        ctx.font = `600 ${barWidth >= 28 ? 12 : 10}px system-ui, sans-serif`;
         ctx.textAlign = 'center';
-        // Draw value above or inside bar
-        const textY = barHeight > 30 ? y + 16 : y - 10;
-        ctx.fillStyle = barHeight > 30 ? '#ffffff' : (isDarkMode ? '#e5e7eb' : '#374151');
+        const textY = barHeight > 24 ? y + 14 : Math.max(10, y - 5);
+        ctx.fillStyle = barHeight > 24 ? '#ffffff' : (isDarkMode ? '#e5e7eb' : '#374151');
         ctx.fillText(`${val}`, x + barWidth / 2, textY);
+      }
 
-        // Index label at bottom
+      // Index labels at bottom: only when not cramped
+      if (n <= 16) {
         ctx.fillStyle = isDarkMode ? '#9ca3af' : '#6b7280';
         ctx.font = '500 10px monospace';
-        ctx.fillText(`[${i}]`, x + barWidth / 2, height - paddingBottom + 16);
+        ctx.textAlign = 'center';
+        ctx.fillText(`[${i}]`, x + barWidth / 2, height - paddingBottom + 15);
+      } else if (n <= 35 && (i % 5 === 0 || i === n - 1)) {
+        // Show every 5th index and last index cleanly
+        ctx.fillStyle = isDarkMode ? '#9ca3af' : '#6b7280';
+        ctx.font = '500 9px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`[${i}]`, x + barWidth / 2, height - paddingBottom + 13);
       }
     }
-  }, [array, activeIndices, sortedIndices, stepType, sublistBounds, isDarkMode, maxVal]);
+  }, [array, activeIndices, sortedIndices, stepType, sublistBounds, isDarkMode, maxVal, dimensions]);
 
   return (
     <div
       ref={containerRef}
-      className={`relative w-full h-[360px] sm:h-[420px] rounded-2xl flex items-center justify-center p-2 sm:p-4 transition-colors ${
+      className={`relative w-full overflow-hidden rounded-2xl flex items-center justify-center transition-colors ${
+        className ? className : 'h-[340px] sm:h-[400px]'
+      } ${
         isDarkMode ? 'bg-slate-900/90 border border-slate-800' : 'bg-white border border-slate-200 shadow-sm'
       }`}
     >

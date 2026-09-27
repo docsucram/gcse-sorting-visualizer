@@ -18,6 +18,26 @@ export default function VisualizerImage({
   const [isDragging, setIsDragging] = useState(false);
   const fileInputRef = useRef(null);
 
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
+
+  // Track container dimensions with ResizeObserver
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        if (width > 0 && height > 0) {
+          setDimensions({ width: Math.floor(width), height: Math.floor(height) });
+        }
+      }
+    });
+
+    ro.observe(container);
+    return () => ro.disconnect();
+  }, []);
+
   // Load initial synthwave art
   useEffect(() => {
     if (!imageSrc) {
@@ -46,11 +66,11 @@ export default function VisualizerImage({
     const ctx = canvas.getContext('2d');
     const dpr = window.devicePixelRatio || 1;
     const rect = container.getBoundingClientRect();
-    const width = rect.width;
-    const height = Math.max(300, rect.height || 420);
+    const width = dimensions.width || Math.floor(rect.width) || 400;
+    const height = dimensions.height || Math.floor(rect.height) || 360;
 
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.floor(width * dpr);
+    canvas.height = Math.floor(height * dpr);
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 

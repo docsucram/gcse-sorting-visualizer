@@ -153,8 +153,8 @@ export default function RaceMode({ isDarkMode = true }) {
 
         {/* Sliders: Array Size & Speed */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-800/40">
-          <div className="flex items-center justify-between gap-3 text-xs">
-            <span className="font-medium text-slate-400">List Elements: <strong className="text-indigo-400">{arraySize}</strong></span>
+          <div className="flex items-center gap-2.5 text-xs">
+            <span className="font-medium text-slate-400 whitespace-nowrap min-w-[95px]">List Elements: <strong className="text-indigo-400">{arraySize}</strong></span>
             <input
               type="range"
               min="10"
@@ -162,12 +162,12 @@ export default function RaceMode({ isDarkMode = true }) {
               step="5"
               value={arraySize}
               onChange={(e) => setArraySize(Number(e.target.value))}
-              className="w-48 accent-indigo-500"
+              className="w-36 sm:w-44 accent-indigo-500 cursor-pointer"
             />
           </div>
 
-          <div className="flex items-center justify-between gap-3 text-xs">
-            <span className="font-medium text-slate-400">Animation Speed: <strong className="text-indigo-400">{speed} steps/s</strong></span>
+          <div className="flex items-center gap-2.5 text-xs">
+            <span className="font-medium text-slate-400 whitespace-nowrap min-w-[120px]">Animation Speed: <strong className="text-indigo-400">{speed} steps/s</strong></span>
             <input
               type="range"
               min="5"
@@ -175,7 +175,7 @@ export default function RaceMode({ isDarkMode = true }) {
               step="5"
               value={speed}
               onChange={(e) => setSpeed(Number(e.target.value))}
-              className="w-48 accent-indigo-500"
+              className="w-36 sm:w-44 accent-indigo-500 cursor-pointer"
             />
           </div>
         </div>
@@ -218,7 +218,7 @@ export default function RaceMode({ isDarkMode = true }) {
             )}
           </div>
 
-          <div className="h-[280px]">
+          <div className="w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden bg-slate-950/40 p-1 border border-slate-800/40">
             <VisualizerBars
               array={currentStep1.array}
               activeIndices={currentStep1.indices}
@@ -226,6 +226,7 @@ export default function RaceMode({ isDarkMode = true }) {
               stepType={currentStep1.type}
               sublistBounds={currentStep1.sublistBounds}
               isDarkMode={isDarkMode}
+              className="w-full h-full border-none shadow-none bg-transparent"
             />
           </div>
 
@@ -277,7 +278,7 @@ export default function RaceMode({ isDarkMode = true }) {
             )}
           </div>
 
-          <div className="h-[280px]">
+          <div className="w-full h-[300px] sm:h-[340px] rounded-xl overflow-hidden bg-slate-950/40 p-1 border border-slate-800/40">
             <VisualizerBars
               array={currentStep2.array}
               activeIndices={currentStep2.indices}
@@ -285,6 +286,7 @@ export default function RaceMode({ isDarkMode = true }) {
               stepType={currentStep2.type}
               sublistBounds={currentStep2.sublistBounds}
               isDarkMode={isDarkMode}
+              className="w-full h-full border-none shadow-none bg-transparent"
             />
           </div>
 

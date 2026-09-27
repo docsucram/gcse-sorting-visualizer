@@ -193,10 +193,12 @@ export default function ControlsToolbar({
         </div>
 
         {/* Sliders: Array Size & Speed */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
+        <div className="flex flex-wrap items-center gap-4 sm:gap-6 sm:justify-end">
           {/* Size slider */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-slate-400 whitespace-nowrap">Size: <strong className="text-indigo-400">{arraySize}</strong></span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 whitespace-nowrap min-w-[62px]">
+              Size: <strong className="text-indigo-400">{arraySize}</strong>
+            </span>
             <input
               type="range"
               min="5"
@@ -205,13 +207,15 @@ export default function ControlsToolbar({
               value={arraySize}
               onChange={(e) => onArraySizeChange(Number(e.target.value))}
               disabled={isPlaying}
-              className="w-28 sm:w-32 accent-indigo-500"
+              className="w-28 sm:w-36 accent-indigo-500 cursor-pointer"
             />
           </div>
 
           {/* Speed slider */}
-          <div className="flex items-center justify-between gap-2">
-            <span className="text-slate-400 whitespace-nowrap">Speed: <strong className="text-indigo-400">{speed} steps/s</strong></span>
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 whitespace-nowrap min-w-[105px]">
+              Speed: <strong className="text-indigo-400">{speed} steps/s</strong>
+            </span>
             <input
               type="range"
               min="1"
@@ -219,7 +223,7 @@ export default function ControlsToolbar({
               step="1"
               value={speed}
               onChange={(e) => onSpeedChange(Number(e.target.value))}
-              className="w-28 sm:w-32 accent-indigo-500"
+              className="w-28 sm:w-36 accent-indigo-500 cursor-pointer"
             />
           </div>
         </div>
