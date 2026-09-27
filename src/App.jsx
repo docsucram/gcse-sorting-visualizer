@@ -21,7 +21,30 @@ export default function App() {
   const [activeView, setActiveView] = useState('visualizer'); // 'visualizer' | 'race' | 'revision'
   const [visualizerMode, setVisualizerMode] = useState('bars'); // 'bars' | 'image'
   const [selectedAlgorithm, setSelectedAlgorithm] = useState('bubble');
-  const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isDarkMode, setIsDarkMode] = useState(() => {
+    try {
+      const saved = localStorage.getItem('theme');
+      if (saved !== null) return saved === 'dark';
+      return true; // default dark for modern IDE feel
+    } catch {
+      return true;
+    }
+  });
+
+  // Sync theme with <html> class and localStorage
+  useEffect(() => {
+    try {
+      if (isDarkMode) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, [isDarkMode]);
 
   // Audio State
   const [audioMode, setAudioMode] = useState('chimes');

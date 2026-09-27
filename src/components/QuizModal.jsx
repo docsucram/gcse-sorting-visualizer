@@ -44,34 +44,42 @@ export default function QuizModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in duration-200">
       <div className={`relative w-full max-w-lg rounded-2xl p-6 shadow-2xl border transition-all ${
-        isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-800'
+        isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
         {/* Top bar with stats & streak */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-700/40 mb-4">
+        <div className={`flex items-center justify-between pb-3 border-b mb-4 ${
+          isDarkMode ? 'border-slate-800' : 'border-slate-200'
+        }`}>
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
               <HelpCircle className="w-5 h-5" />
             </span>
             <div>
               <h3 className="font-bold text-sm sm:text-base">Predict the Next Move</h3>
-              <p className="text-xs text-slate-400">Active Recall & GCSE Mark Scheme Check</p>
+              <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Active Recall & GCSE Mark Scheme Check</p>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5">
             {quizStats.streak > 1 && (
-              <span className="flex items-center gap-1 text-xs font-bold text-amber-400 bg-amber-400/10 px-2.5 py-1 rounded-full animate-pulse">
+              <span className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full animate-pulse ${
+                isDarkMode ? 'text-amber-400 bg-amber-400/10' : 'text-amber-900 bg-amber-100 border border-amber-300'
+              }`}>
                 <Flame className="w-3.5 h-3.5 fill-amber-400" />
                 {quizStats.streak} Streak
               </span>
             )}
-            <span className="flex items-center gap-1 text-xs font-bold text-emerald-400 bg-emerald-400/10 px-2.5 py-1 rounded-full">
+            <span className={`flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-full ${
+              isDarkMode ? 'text-emerald-400 bg-emerald-400/10' : 'text-emerald-800 bg-emerald-100 border border-emerald-300'
+            }`}>
               <Award className="w-3.5 h-3.5" />
               Grade {estimatedGrade}
             </span>
             <button
               onClick={handleNext}
-              className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+              className={`p-1 rounded-lg transition-colors ${
+                isDarkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+              }`}
               title="Skip question"
             >
               <X className="w-4 h-4" />
@@ -81,7 +89,9 @@ export default function QuizModal({
 
         {/* Question text */}
         <div className="my-4">
-          <p className="text-sm sm:text-base font-semibold text-slate-100 leading-snug">
+          <p className={`text-sm sm:text-base font-bold leading-snug ${
+            isDarkMode ? 'text-slate-100' : 'text-slate-900'
+          }`}>
             {quiz.question}
           </p>
         </div>
@@ -94,15 +104,21 @@ export default function QuizModal({
 
             let buttonStyle = isDarkMode
               ? 'bg-slate-800 hover:bg-slate-750 border-slate-700 text-slate-200'
-              : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700';
+              : 'bg-slate-50 hover:bg-slate-100 border-slate-300 text-slate-900 font-medium';
 
             if (hasSubmitted) {
               if (isThisCorrect) {
-                buttonStyle = 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-semibold ring-1 ring-emerald-500';
+                buttonStyle = isDarkMode
+                  ? 'bg-emerald-500/20 border-emerald-500 text-emerald-300 font-semibold ring-1 ring-emerald-500'
+                  : 'bg-emerald-50 border-emerald-500 text-emerald-950 font-bold ring-1 ring-emerald-500';
               } else if (isThisChosen && !isThisCorrect) {
-                buttonStyle = 'bg-rose-500/20 border-rose-500 text-rose-300 font-semibold ring-1 ring-rose-500';
+                buttonStyle = isDarkMode
+                  ? 'bg-rose-500/20 border-rose-500 text-rose-300 font-semibold ring-1 ring-rose-500'
+                  : 'bg-rose-50 border-rose-500 text-rose-950 font-bold ring-1 ring-rose-500';
               } else {
-                buttonStyle = 'opacity-50 border-slate-700 text-slate-500';
+                buttonStyle = isDarkMode
+                  ? 'opacity-50 border-slate-700 text-slate-500'
+                  : 'opacity-50 border-slate-200 text-slate-400';
               }
             }
 
@@ -111,14 +127,14 @@ export default function QuizModal({
                 key={idx}
                 disabled={hasSubmitted}
                 onClick={() => handleSelect(idx)}
-                className={`w-full p-3 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all flex items-center justify-between gap-3 ${buttonStyle}`}
+                className={`w-full p-3 rounded-xl border text-left text-xs sm:text-sm transition-all flex items-center justify-between gap-3 ${buttonStyle}`}
               >
                 <span>{opt}</span>
                 {hasSubmitted && isThisCorrect && (
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
                 )}
                 {hasSubmitted && isThisChosen && !isThisCorrect && (
-                  <XCircle className="w-4 h-4 text-rose-400 shrink-0" />
+                  <XCircle className="w-4 h-4 text-rose-500 shrink-0" />
                 )}
               </button>
             );
@@ -129,13 +145,13 @@ export default function QuizModal({
         {hasSubmitted && (
           <div className={`p-3.5 rounded-xl border mb-4 text-xs leading-relaxed animate-in fade-in ${
             isCorrect
-              ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200'
-              : 'bg-rose-950/40 border-rose-500/40 text-rose-200'
+              ? isDarkMode ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-200' : 'bg-emerald-50 border-emerald-300 text-emerald-950'
+              : isDarkMode ? 'bg-rose-950/40 border-rose-500/40 text-rose-200' : 'bg-rose-50 border-rose-300 text-rose-950'
           }`}>
             <p className="font-bold mb-1 flex items-center gap-1.5">
               {isCorrect ? '✅ Exam Mark Awarded!' : '❌ Not quite!'}
             </p>
-            <p className="text-slate-300">{quiz.explanation}</p>
+            <p className={isDarkMode ? 'text-slate-300' : 'text-slate-800 font-medium'}>{quiz.explanation}</p>
           </div>
         )}
 

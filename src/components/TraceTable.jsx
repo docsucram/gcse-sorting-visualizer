@@ -123,13 +123,13 @@ export default function TraceTable({
             <table className="w-full text-left text-xs font-mono border-collapse">
               <thead>
                 <tr className={`border-b ${
-                  isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-600 font-bold'
+                  isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-800 font-bold bg-slate-50'
                 }`}>
-                  <th className="py-2 px-2.5 font-semibold">Pass</th>
-                  <th className="py-2 px-2.5 font-semibold">Array State</th>
-                  <th className="py-2 px-2 font-semibold text-center">Cmp</th>
-                  <th className="py-2 px-2 font-semibold text-center">Swp</th>
-                  <th className="py-2 px-2.5 font-semibold">Exam Description</th>
+                  <th className="py-2 px-2.5 font-bold">Pass</th>
+                  <th className="py-2 px-2.5 font-bold">Array State</th>
+                  <th className="py-2 px-2 font-bold text-center">Cmp</th>
+                  <th className="py-2 px-2 font-bold text-center">Swp</th>
+                  <th className="py-2 px-2.5 font-bold">Exam Description</th>
                 </tr>
               </thead>
               <tbody>
@@ -145,26 +145,26 @@ export default function TraceTable({
                         isActiveRow
                           ? isDarkMode
                             ? 'bg-emerald-950/40 text-emerald-200 font-semibold'
-                            : 'bg-emerald-50/80 text-emerald-950 font-bold'
+                            : 'bg-emerald-50 text-emerald-950 font-bold'
                           : isDarkMode
                           ? 'border-slate-800/60 hover:bg-slate-800/40 text-slate-300'
-                          : 'border-slate-100 hover:bg-slate-50 text-slate-800'
+                          : 'border-slate-200 hover:bg-slate-50 text-slate-900'
                       }`}
                     >
                       <td className="py-2 px-2.5 whitespace-nowrap">
                         <span className={`inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[11px] font-bold ${
                           s.pass === 0
-                            ? isDarkMode ? 'bg-slate-500/10 text-slate-500' : 'bg-slate-100 text-slate-600'
+                            ? isDarkMode ? 'bg-slate-500/10 text-slate-400' : 'bg-slate-100 text-slate-800 border border-slate-300'
                             : isActiveRow
-                            ? isDarkMode ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-800'
-                            : isDarkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-100 text-indigo-800'
+                            ? isDarkMode ? 'bg-emerald-500/20 text-emerald-400' : 'bg-emerald-100 text-emerald-900 border border-emerald-300'
+                            : isDarkMode ? 'bg-indigo-500/10 text-indigo-400' : 'bg-indigo-100 text-indigo-900 border border-indigo-200'
                         }`}>
                           {s.pass === 0 ? 'Initial' : `Pass ${s.pass}`}
                         </span>
                       </td>
                       <td className="py-2 px-2.5 whitespace-nowrap">
                         <div className="flex items-center gap-1">
-                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>[</span>
+                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-600 font-bold'}>[</span>
                           {s.array.map((num, i) => {
                             const isSortedInThisStep = s.sortedIndices?.includes(i);
                             return (
@@ -174,7 +174,7 @@ export default function TraceTable({
                                   isSortedInThisStep
                                     ? isDarkMode
                                       ? 'bg-emerald-500/20 text-emerald-400 font-bold'
-                                      : 'bg-emerald-100 text-emerald-800 font-bold'
+                                      : 'bg-emerald-100 text-emerald-900 font-bold'
                                     : ''
                                 }`}
                               >
@@ -183,17 +183,17 @@ export default function TraceTable({
                               </span>
                             );
                           })}
-                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-500'}>]</span>
+                          <span className={isDarkMode ? 'text-slate-400' : 'text-slate-600 font-bold'}>]</span>
                         </div>
                       </td>
-                      <td className={`py-2 px-2 text-center font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <td className={`py-2 px-2 text-center font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-900'}`}>
                         {s.comparisons}
                       </td>
-                      <td className={`py-2 px-2 text-center font-medium ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                      <td className={`py-2 px-2 text-center font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-900'}`}>
                         {s.swaps}
                       </td>
                       <td className={`py-2 px-2.5 font-sans text-xs max-w-xs truncate ${
-                        isDarkMode ? 'text-slate-400' : 'text-slate-700'
+                        isDarkMode ? 'text-slate-400' : 'text-slate-800 font-medium'
                       }`} title={s.explanation}>
                         {s.explanation}
                       </td>
@@ -203,7 +203,7 @@ export default function TraceTable({
               </tbody>
             </table>
           ) : (
-            <div className="flex items-center justify-center h-32 text-xs text-slate-400">
+            <div className={`flex items-center justify-center h-32 text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>
               Click Start or Step to populate the trace table.
             </div>
           )
@@ -212,14 +212,14 @@ export default function TraceTable({
           <table className="w-full text-left text-xs font-mono border-collapse">
             <thead>
               <tr className={`border-b ${
-                isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-600 font-bold'
+                isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-800 font-bold bg-slate-50'
               }`}>
-                <th className="py-2 px-2 font-semibold text-center">Line</th>
-                <th className="py-2 px-2 font-semibold text-center">j</th>
-                <th className="py-2 px-2 font-semibold text-center">Condition</th>
-                <th className="py-2 px-2 font-semibold text-center">temp</th>
-                <th className="py-2 px-2 font-semibold text-center">swapped</th>
-                <th className="py-2 px-2 font-semibold">Array State</th>
+                <th className="py-2 px-2 font-bold text-center">Line</th>
+                <th className="py-2 px-2 font-bold text-center">j</th>
+                <th className="py-2 px-2 font-bold text-center">Condition</th>
+                <th className="py-2 px-2 font-bold text-center">temp</th>
+                <th className="py-2 px-2 font-bold text-center">swapped</th>
+                <th className="py-2 px-2 font-bold">Array State</th>
               </tr>
             </thead>
             <tbody>
@@ -241,38 +241,38 @@ export default function TraceTable({
                       isCurrent
                         ? isDarkMode
                           ? 'bg-emerald-950/40 text-emerald-200 font-semibold'
-                          : 'bg-emerald-50/80 text-emerald-950 font-bold'
+                          : 'bg-emerald-50 text-emerald-950 font-bold'
                         : isDarkMode
                         ? 'border-slate-800/60 hover:bg-slate-800/40 text-slate-300'
-                        : 'border-slate-100 hover:bg-slate-50 text-slate-800'
+                        : 'border-slate-200 hover:bg-slate-50 text-slate-900'
                     }`}
                   >
-                    <td className={`py-1.5 px-2 text-center font-bold ${isDarkMode ? 'text-indigo-400' : 'text-indigo-700'}`}>
+                    <td className={`py-1.5 px-2 text-center font-bold ${isDarkMode ? 'text-indigo-400' : 'text-indigo-800 font-bold'}`}>
                       {s.codeLine}
                     </td>
-                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-amber-300' : 'text-amber-800'}`}>
+                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-amber-300' : 'text-amber-900 font-bold'}`}>
                       {jVal !== '' ? jVal : '—'}
                     </td>
                     <td className="py-1.5 px-2 text-center">
                       {condVal ? (
                         <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
                           condVal === 'True'
-                            ? (isDarkMode ? 'bg-rose-500/20 text-rose-300' : 'bg-rose-100 text-rose-800')
-                            : (isDarkMode ? 'bg-slate-700/60 text-slate-300' : 'bg-slate-100 text-slate-700')
+                            ? (isDarkMode ? 'bg-rose-500/20 text-rose-300' : 'bg-rose-100 text-rose-800 border border-rose-300')
+                            : (isDarkMode ? 'bg-slate-700/60 text-slate-300' : 'bg-slate-100 text-slate-800 border border-slate-300')
                         }`}>
                           {condVal}
                         </span>
                       ) : '—'}
                     </td>
-                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-purple-300' : 'text-purple-800'}`}>
+                    <td className={`py-1.5 px-2 text-center font-semibold ${isDarkMode ? 'text-purple-300' : 'text-purple-900 font-bold'}`}>
                       {tempVal !== '' ? tempVal : '—'}
                     </td>
                     <td className="py-1.5 px-2 text-center">
                       {swappedVal !== '' ? (
                         <span className={`text-[11px] font-bold ${
                           swappedVal === 'True'
-                            ? (isDarkMode ? 'text-amber-400' : 'text-amber-700')
-                            : (isDarkMode ? 'text-slate-500' : 'text-slate-400')
+                            ? (isDarkMode ? 'text-amber-400' : 'text-amber-900 font-bold')
+                            : (isDarkMode ? 'text-slate-500' : 'text-slate-500 font-semibold')
                         }`}>
                           {swappedVal}
                         </span>

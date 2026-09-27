@@ -93,14 +93,16 @@ export default function PseudocodeTracer({
                 isActive
                   ? isDarkMode
                     ? 'bg-indigo-600/30 text-indigo-200 font-semibold ring-1 ring-indigo-500/60 shadow-sm'
-                    : 'bg-indigo-50 text-indigo-900 font-semibold ring-1 ring-indigo-400/50 shadow-sm'
+                    : 'bg-indigo-50 text-indigo-950 font-bold ring-1 ring-indigo-400 shadow-sm'
                   : isDarkMode
                   ? 'text-slate-400 hover:bg-slate-800/40'
-                  : 'text-slate-600 hover:bg-slate-50'
+                  : 'text-slate-800 hover:bg-slate-100'
               }`}
             >
-              <span className={`w-5 shrink-0 text-right select-none font-bold text-[11px] ${
-                isActive ? 'text-indigo-400' : 'text-slate-500 dark:text-slate-600'
+              <span className={`w-5 shrink-0 text-right select-none text-[11px] ${
+                isActive
+                  ? isDarkMode ? 'text-indigo-400 font-bold' : 'text-indigo-700 font-bold'
+                  : isDarkMode ? 'text-slate-600 font-semibold' : 'text-slate-600 font-bold'
               }`}>
                 {lineObj.line}
               </span>
@@ -114,9 +116,9 @@ export default function PseudocodeTracer({
 
       {/* Live Variable Inspector */}
       <div className={`p-3 border-t ${
-        isDarkMode ? 'border-slate-800 bg-slate-950/40' : 'border-slate-100 bg-slate-50/70'
+        isDarkMode ? 'border-slate-800 bg-slate-950/40' : 'border-slate-200 bg-slate-50'
       }`}>
-        <div className="flex items-center gap-1.5 text-xs font-semibold mb-2 text-slate-500 dark:text-slate-400">
+        <div className={`flex items-center gap-1.5 text-xs font-bold mb-2 ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
           <Variable className="w-3.5 h-3.5 text-amber-500" />
           <span>Live Variable Inspector (AQA Paper 1 Trace)</span>
         </div>
@@ -128,26 +130,26 @@ export default function PseudocodeTracer({
                 className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-mono font-medium ${
                   isDarkMode
                     ? 'bg-slate-800 text-amber-300 border border-slate-700'
-                    : 'bg-white text-amber-700 border border-amber-200 shadow-2xs'
+                    : 'bg-white text-amber-900 border border-amber-300 shadow-2xs font-semibold'
                 }`}
               >
-                <span className="text-slate-400 dark:text-slate-400 font-bold">{key}:</span>
+                <span className={`${isDarkMode ? 'text-slate-400' : 'text-slate-600'} font-bold`}>{key}:</span>
                 <span>{typeof val === 'boolean' ? (val ? 'True' : 'False') : JSON.stringify(val)}</span>
               </span>
             ))
           ) : (
-            <span className="text-xs text-slate-400 italic">No variables active yet</span>
+            <span className={`text-xs italic ${isDarkMode ? 'text-slate-400' : 'text-slate-500'}`}>No variables active yet</span>
           )}
         </div>
       </div>
 
       {/* Live GCSE Explanation & Mark Scheme Commentary */}
       <div className={`p-3 border-t rounded-b-2xl ${
-        isDarkMode ? 'border-slate-800 bg-indigo-950/20' : 'border-slate-100 bg-indigo-50/40'
+        isDarkMode ? 'border-slate-800 bg-indigo-950/20' : 'border-slate-200 bg-indigo-50/50'
       }`}>
         <div className="flex items-start gap-2">
           <Info className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
-          <p className="text-xs text-slate-700 dark:text-slate-300 leading-snug">
+          <p className={`text-xs leading-snug font-medium ${isDarkMode ? 'text-slate-300' : 'text-slate-800'}`}>
             {explanation || 'Select play or step to trace algorithm execution.'}
           </p>
         </div>

@@ -121,8 +121,8 @@ export default function RaceMode({ isDarkMode = true }) {
               <Swords className="w-5 h-5" />
             </span>
             <div>
-              <h2 className="text-lg font-bold">Split-Screen Algorithm Race</h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400">
+              <h2 className={`text-lg font-bold ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>Split-Screen Algorithm Race</h2>
+              <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600 font-medium'}`}>
                 Direct head-to-head comparison demonstrating O(n log n) divide-and-conquer vs O(n²) quadratic efficiency.
               </p>
             </div>
@@ -152,9 +152,11 @@ export default function RaceMode({ isDarkMode = true }) {
         </div>
 
         {/* Sliders: Array Size & Speed */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-800/40">
+        <div className={`grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 pt-4 border-t ${isDarkMode ? 'border-slate-800/40' : 'border-slate-200'}`}>
           <div className="flex items-center gap-2.5 text-xs">
-            <span className="font-medium text-slate-400 whitespace-nowrap min-w-[95px]">List Elements: <strong className="text-indigo-400">{arraySize}</strong></span>
+            <span className={`font-semibold whitespace-nowrap min-w-[95px] ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
+              List Elements: <strong className={isDarkMode ? 'text-indigo-400' : 'text-indigo-700 font-bold'}>{arraySize}</strong>
+            </span>
             <input
               type="range"
               min="10"
@@ -167,7 +169,9 @@ export default function RaceMode({ isDarkMode = true }) {
           </div>
 
           <div className="flex items-center gap-2.5 text-xs">
-            <span className="font-medium text-slate-400 whitespace-nowrap min-w-[120px]">Animation Speed: <strong className="text-indigo-400">{speed} steps/s</strong></span>
+            <span className={`font-semibold whitespace-nowrap min-w-[120px] ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
+              Animation Speed: <strong className={isDarkMode ? 'text-indigo-400' : 'text-indigo-700 font-bold'}>{speed} steps/s</strong>
+            </span>
             <input
               type="range"
               min="5"
@@ -200,7 +204,9 @@ export default function RaceMode({ isDarkMode = true }) {
                   <option key={a.id} value={a.id}>{a.name}</option>
                 ))}
               </select>
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-semibold">
+              <span className={`text-xs font-mono px-2 py-0.5 rounded ${
+                isDarkMode ? 'bg-indigo-500/10 text-indigo-400 font-semibold' : 'bg-indigo-50 text-indigo-800 font-bold border border-indigo-200'
+              }`}>
                 {algo1Meta.complexity.averageTime}
               </span>
             </div>
@@ -212,7 +218,7 @@ export default function RaceMode({ isDarkMode = true }) {
               </span>
             )}
             {isDone1 && winner !== algo1Id && (
-              <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+              <span className={`text-xs font-bold flex items-center gap-1 ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>
                 <CheckCircle2 className="w-3.5 h-3.5" /> Finished
               </span>
             )}
@@ -237,20 +243,20 @@ export default function RaceMode({ isDarkMode = true }) {
             isDarkMode ? 'border-slate-800/40' : 'border-slate-200'
           }`}>
             <div className={`p-2 rounded-xl border ${
-              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-100/90 border-slate-300'
             }`}>
               <span className={`block text-[10px] uppercase font-bold ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                isDarkMode ? 'text-slate-400' : 'text-slate-700'
               }`}>Comparisons</span>
               <span className={`text-sm font-mono font-bold ${
-                isDarkMode ? 'text-amber-400' : 'text-amber-700'
+                isDarkMode ? 'text-amber-400' : 'text-amber-800'
               }`}>{currentStep1.comparisons}</span>
             </div>
             <div className={`p-2 rounded-xl border ${
-              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-100/90 border-slate-300'
             }`}>
               <span className={`block text-[10px] uppercase font-bold ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                isDarkMode ? 'text-slate-400' : 'text-slate-700'
               }`}>Swaps / Writes</span>
               <span className={`text-sm font-mono font-bold ${
                 isDarkMode ? 'text-rose-400' : 'text-rose-700'
@@ -276,7 +282,9 @@ export default function RaceMode({ isDarkMode = true }) {
                   <option key={a.id} value={a.id}>{a.name}</option>
                 ))}
               </select>
-              <span className="text-xs font-mono px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 font-semibold">
+              <span className={`text-xs font-mono px-2 py-0.5 rounded ${
+                isDarkMode ? 'bg-indigo-500/10 text-indigo-400 font-semibold' : 'bg-indigo-50 text-indigo-800 font-bold border border-indigo-200'
+              }`}>
                 {algo2Meta.complexity.averageTime}
               </span>
             </div>
@@ -288,7 +296,7 @@ export default function RaceMode({ isDarkMode = true }) {
               </span>
             )}
             {isDone2 && winner !== algo2Id && (
-              <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1">
+              <span className={`text-xs font-bold flex items-center gap-1 ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>
                 <CheckCircle2 className="w-3.5 h-3.5" /> Finished
               </span>
             )}
@@ -313,20 +321,20 @@ export default function RaceMode({ isDarkMode = true }) {
             isDarkMode ? 'border-slate-800/40' : 'border-slate-200'
           }`}>
             <div className={`p-2 rounded-xl border ${
-              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-100/90 border-slate-300'
             }`}>
               <span className={`block text-[10px] uppercase font-bold ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                isDarkMode ? 'text-slate-400' : 'text-slate-700'
               }`}>Comparisons</span>
               <span className={`text-sm font-mono font-bold ${
-                isDarkMode ? 'text-amber-400' : 'text-amber-700'
+                isDarkMode ? 'text-amber-400' : 'text-amber-800'
               }`}>{currentStep2.comparisons}</span>
             </div>
             <div className={`p-2 rounded-xl border ${
-              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-50 border-slate-200'
+              isDarkMode ? 'bg-slate-800/40 border-slate-700/50' : 'bg-slate-100/90 border-slate-300'
             }`}>
               <span className={`block text-[10px] uppercase font-bold ${
-                isDarkMode ? 'text-slate-400' : 'text-slate-600'
+                isDarkMode ? 'text-slate-400' : 'text-slate-700'
               }`}>Swaps / Writes</span>
               <span className={`text-sm font-mono font-bold ${
                 isDarkMode ? 'text-rose-400' : 'text-rose-700'

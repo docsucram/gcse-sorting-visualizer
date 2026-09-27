@@ -172,20 +172,20 @@ export default function VisualizerBars({
         ctx.font = `600 ${barWidth >= 28 ? 12 : 10}px system-ui, sans-serif`;
         ctx.textAlign = 'center';
         const textY = barHeight > 24 ? y + 14 : Math.max(10, y - 5);
-        ctx.fillStyle = barHeight > 24 ? '#ffffff' : (isDarkMode ? '#e5e7eb' : '#374151');
+        ctx.fillStyle = barHeight > 24 ? '#ffffff' : (isDarkMode ? '#e5e7eb' : '#0f172a');
         ctx.fillText(`${val}`, x + barWidth / 2, textY);
       }
 
       // Index labels at bottom: only when not cramped
       if (n <= 16) {
-        ctx.fillStyle = isDarkMode ? '#9ca3af' : '#6b7280';
-        ctx.font = '500 10px monospace';
+        ctx.fillStyle = isDarkMode ? '#9ca3af' : '#334155';
+        ctx.font = '600 10px monospace';
         ctx.textAlign = 'center';
         ctx.fillText(`[${i}]`, x + barWidth / 2, height - paddingBottom + 15);
       } else if (n <= 35 && (i % 5 === 0 || i === n - 1)) {
         // Show every 5th index and last index cleanly
-        ctx.fillStyle = isDarkMode ? '#9ca3af' : '#6b7280';
-        ctx.font = '500 9px monospace';
+        ctx.fillStyle = isDarkMode ? '#9ca3af' : '#334155';
+        ctx.font = '600 9px monospace';
         ctx.textAlign = 'center';
         ctx.fillText(`[${i}]`, x + barWidth / 2, height - paddingBottom + 13);
       }

@@ -148,15 +148,15 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
           </div>
 
           <div className="space-y-2.5">
-            <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+            <h4 className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
               Time & Space Complexity
             </h4>
             
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className={`p-2.5 rounded-xl border ${
-                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-50 border-slate-200'
+                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-100/90 border-slate-300'
               }`}>
-                <span className={`block text-[10px] uppercase font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <span className={`block text-[10px] uppercase font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
                   Best Time
                 </span>
                 <span className={`text-sm font-mono font-bold ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>
@@ -164,19 +164,19 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                 </span>
               </div>
               <div className={`p-2.5 rounded-xl border ${
-                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-50 border-slate-200'
+                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-100/90 border-slate-300'
               }`}>
-                <span className={`block text-[10px] uppercase font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <span className={`block text-[10px] uppercase font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
                   Average
                 </span>
-                <span className={`text-sm font-mono font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>
+                <span className={`text-sm font-mono font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-800'}`}>
                   {algo.complexity.averageTime}
                 </span>
               </div>
               <div className={`p-2.5 rounded-xl border ${
-                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-50 border-slate-200'
+                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-100/90 border-slate-300'
               }`}>
-                <span className={`block text-[10px] uppercase font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <span className={`block text-[10px] uppercase font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
                   Worst Time
                 </span>
                 <span className={`text-sm font-mono font-bold ${isDarkMode ? 'text-rose-400' : 'text-rose-700'}`}>
@@ -187,25 +187,25 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
 
             <div className="grid grid-cols-2 gap-2 text-center pt-1">
               <div className={`p-2.5 rounded-xl border ${
-                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-50 border-slate-200'
+                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-100/90 border-slate-300'
               }`}>
-                <span className={`block text-[10px] uppercase font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <span className={`block text-[10px] uppercase font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
                   Space Complexity
                 </span>
-                <span className={`text-xs font-mono font-bold ${isDarkMode ? 'text-indigo-300' : 'text-indigo-700'}`}>
+                <span className={`text-xs font-mono font-bold ${isDarkMode ? 'text-indigo-300' : 'text-indigo-800'}`}>
                   {algo.complexity.space}
                 </span>
               </div>
               <div className={`p-2.5 rounded-xl border ${
-                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-50 border-slate-200'
+                isDarkMode ? 'bg-slate-800/50 border-slate-700/40' : 'bg-slate-100/90 border-slate-300'
               }`}>
-                <span className={`block text-[10px] uppercase font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+                <span className={`block text-[10px] uppercase font-bold ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
                   Stability
                 </span>
                 <span className={`text-xs font-bold flex items-center justify-center gap-1 ${
                   algo.complexity.stable
                     ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-700')
-                    : (isDarkMode ? 'text-amber-400' : 'text-amber-700')
+                    : (isDarkMode ? 'text-amber-400' : 'text-amber-800')
                 }`}>
                   {algo.complexity.stable ? <Check className="w-3.5 h-3.5" /> : <X className="w-3.5 h-3.5" />}
                   {algo.complexity.stable ? 'Stable' : 'Unstable'}
@@ -216,11 +216,11 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
 
           {/* Complexity Explanation notes */}
           <div className={`p-3 rounded-xl border text-xs space-y-1.5 ${
-            isDarkMode ? 'bg-slate-800/30 border-slate-750 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'
+            isDarkMode ? 'bg-slate-800/30 border-slate-750 text-slate-300' : 'bg-slate-100/90 border-slate-300 text-slate-800'
           }`}>
-            <p><strong>Best Case:</strong> {algo.complexityNotes.best}</p>
-            <p><strong>Worst Case:</strong> {algo.complexityNotes.worst}</p>
-            <p><strong>Space / RAM:</strong> {algo.complexityNotes.space}</p>
+            <p><strong className={isDarkMode ? 'text-slate-100' : 'text-slate-900'}>Best Case:</strong> {algo.complexityNotes.best}</p>
+            <p><strong className={isDarkMode ? 'text-slate-100' : 'text-slate-900'}>Worst Case:</strong> {algo.complexityNotes.worst}</p>
+            <p><strong className={isDarkMode ? 'text-slate-100' : 'text-slate-900'}>Space / RAM:</strong> {algo.complexityNotes.space}</p>
           </div>
         </div>
 
@@ -272,7 +272,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
           <div className={`p-3.5 rounded-xl border text-xs ${
             isDarkMode
               ? 'bg-amber-500/10 border-amber-500/20 text-amber-200'
-              : 'bg-amber-50/80 border-amber-300 text-amber-950'
+              : 'bg-amber-50 border-amber-300 text-amber-950 font-medium'
           }`}>
             <div className={`flex items-center gap-1.5 font-bold mb-1.5 ${
               isDarkMode ? 'text-amber-400' : 'text-amber-900'
@@ -281,7 +281,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
               <span>GCSE Mark Scheme Traps</span>
             </div>
             <ul className={`space-y-1 list-disc list-inside ${
-              isDarkMode ? 'text-amber-200/90' : 'text-amber-900'
+              isDarkMode ? 'text-amber-200/90' : 'text-amber-950 font-medium'
             }`}>
               {algo.examTips.map((tip, i) => (
                 <li key={i}>{tip}</li>
@@ -292,7 +292,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
           {/* Interactive Exam Questions with Mark Scheme Reveal */}
           <div className="space-y-3">
             <h4 className={`text-xs font-bold uppercase tracking-wider flex items-center gap-1.5 ${
-              isDarkMode ? 'text-indigo-400' : 'text-indigo-600'
+              isDarkMode ? 'text-indigo-400' : 'text-indigo-700'
             }`}>
               <HelpCircle className="w-3.5 h-3.5" /> Past-Paper Style Questions
             </h4>
@@ -305,7 +305,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                   className={`p-3 rounded-xl border text-xs ${
                     isDarkMode
                       ? 'border-slate-700/50 bg-slate-800/40 text-slate-200'
-                      : 'border-slate-200 bg-slate-50 text-slate-800'
+                      : 'border-slate-300 bg-slate-100/90 text-slate-900'
                   }`}
                 >
                   <p className={`font-semibold mb-2 ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>
@@ -314,7 +314,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                   <button
                     onClick={() => toggleQuestion(idx)}
                     className={`text-[11px] font-bold flex items-center gap-1 transition-colors ${
-                      isDarkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
+                      isDarkMode ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-700 hover:text-indigo-900'
                     }`}
                   >
                     {isRevealed ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
@@ -325,7 +325,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                     <div className={`mt-2.5 p-2.5 rounded-lg border text-xs animate-in fade-in ${
                       isDarkMode
                         ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-200'
-                        : 'bg-emerald-50 border-emerald-300 text-emerald-950'
+                        : 'bg-emerald-50 border-emerald-300 text-emerald-950 font-medium'
                     }`}>
                       <span className={`font-bold block mb-0.5 ${
                         isDarkMode ? 'text-emerald-400' : 'text-emerald-800'
@@ -448,7 +448,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                   onChange={() => toggleChecklistItem(cIdx)}
                   className="mt-0.5 accent-indigo-500 rounded"
                 />
-                <span className={checklist[cIdx] ? 'line-through text-slate-400' : (isDarkMode ? 'text-slate-300' : 'text-slate-700')}>
+                <span className={checklist[cIdx] ? 'line-through text-slate-400' : (isDarkMode ? 'text-slate-300' : 'text-slate-800 font-medium')}>
                   {crit}
                 </span>
               </label>
@@ -477,7 +477,7 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
               }`}>
                 Level 3 (9/9 Marks) Exemplar Model Essay:
               </strong>
-              <p className={`whitespace-pre-line ${isDarkMode ? 'text-slate-200' : 'text-slate-800'}`}>
+              <p className={`whitespace-pre-line leading-relaxed ${isDarkMode ? 'text-slate-200' : 'text-slate-900'}`}>
                 {AQA_NINE_MARK_QUESTION.modelAnswer}
               </p>
             </div>
@@ -496,14 +496,14 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs font-mono border-collapse">
             <thead>
-              <tr className={`border-b ${isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-200 text-slate-700 font-bold'}`}>
-                <th className="py-2.5 px-3 font-semibold">Algorithm</th>
-                <th className="py-2.5 px-3 font-semibold">Syllabus Core</th>
-                <th className="py-2.5 px-3 font-semibold">Best Time</th>
-                <th className="py-2.5 px-3 font-semibold">Average Time</th>
-                <th className="py-2.5 px-3 font-semibold">Worst Time</th>
-                <th className="py-2.5 px-3 font-semibold">Space (RAM)</th>
-                <th className="py-2.5 px-3 font-semibold">Stable?</th>
+              <tr className={`border-b ${isDarkMode ? 'border-slate-800 text-slate-400' : 'border-slate-300 text-slate-800 font-bold bg-slate-50'}`}>
+                <th className="py-2.5 px-3 font-bold">Algorithm</th>
+                <th className="py-2.5 px-3 font-bold">Syllabus Core</th>
+                <th className="py-2.5 px-3 font-bold">Best Time</th>
+                <th className="py-2.5 px-3 font-bold">Average Time</th>
+                <th className="py-2.5 px-3 font-bold">Worst Time</th>
+                <th className="py-2.5 px-3 font-bold">Space (RAM)</th>
+                <th className="py-2.5 px-3 font-bold">Stable?</th>
               </tr>
             </thead>
             <tbody>
@@ -535,26 +535,26 @@ export default function RevisionCards({ activeAlgorithmId = 'bubble', isDarkMode
                         OCR J277
                       </span>
                     ) : (
-                      <span className={`text-[10px] ${isDarkMode ? 'text-slate-500' : 'text-slate-400'}`}>Extension</span>
+                      <span className={`text-[10px] font-semibold ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Extension</span>
                     )}
                   </td>
                   <td className={`py-2.5 px-3 font-bold ${isDarkMode ? 'text-emerald-400' : 'text-emerald-700'}`}>
                     {a.complexity.bestTime}
                   </td>
-                  <td className={`py-2.5 px-3 font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-700'}`}>
+                  <td className={`py-2.5 px-3 font-bold ${isDarkMode ? 'text-amber-400' : 'text-amber-800'}`}>
                     {a.complexity.averageTime}
                   </td>
                   <td className={`py-2.5 px-3 font-bold ${isDarkMode ? 'text-rose-400' : 'text-rose-700'}`}>
                     {a.complexity.worstTime}
                   </td>
-                  <td className={`py-2.5 px-3 ${isDarkMode ? 'text-indigo-300' : 'text-indigo-800 font-medium'}`}>
+                  <td className={`py-2.5 px-3 font-semibold ${isDarkMode ? 'text-indigo-300' : 'text-indigo-800'}`}>
                     {a.complexity.space}
                   </td>
                   <td className="py-2.5 px-3">
                     <span className={`inline-flex items-center gap-1 font-sans text-[11px] font-bold ${
                       a.complexity.stable
                         ? (isDarkMode ? 'text-emerald-400' : 'text-emerald-700')
-                        : (isDarkMode ? 'text-slate-400' : 'text-slate-500')
+                        : (isDarkMode ? 'text-slate-400' : 'text-slate-600')
                     }`}>
                       {a.complexity.stable ? 'Yes' : 'No'}
                     </span>

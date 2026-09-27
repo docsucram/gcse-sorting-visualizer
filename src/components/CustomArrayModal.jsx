@@ -50,22 +50,26 @@ export default function CustomArrayModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in">
       <div className={`relative w-full max-w-md rounded-2xl p-6 shadow-2xl border transition-all ${
-        isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-800'
+        isDarkMode ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-200 text-slate-900'
       }`}>
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-700/40 mb-4">
+        <div className={`flex items-center justify-between pb-3 border-b mb-4 ${
+          isDarkMode ? 'border-slate-800' : 'border-slate-200'
+        }`}>
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
               <FileText className="w-5 h-5" />
             </span>
             <div>
               <h3 className="font-bold text-base">Custom Array Input</h3>
-              <p className="text-xs text-slate-400">Test exact lists from GCSE exam papers</p>
+              <p className={`text-xs ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>Test exact lists from GCSE exam papers</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1 rounded-lg text-slate-400 hover:text-slate-200 hover:bg-slate-800 transition-colors"
+            className={`p-1 rounded-lg transition-colors ${
+              isDarkMode ? 'text-slate-400 hover:text-slate-200 hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+            }`}
           >
             <X className="w-4 h-4" />
           </button>
@@ -73,7 +77,7 @@ export default function CustomArrayModal({
 
         {/* Text Input */}
         <div className="space-y-2 mb-4">
-          <label className="text-xs font-semibold text-slate-300">
+          <label className={`text-xs font-semibold ${isDarkMode ? 'text-slate-300' : 'text-slate-700'}`}>
             Comma-separated values:
           </label>
           <input
@@ -82,15 +86,15 @@ export default function CustomArrayModal({
             onChange={(e) => setInputText(e.target.value)}
             placeholder="e.g. 12, 7, 34, 2, 8"
             className={`w-full p-2.5 rounded-xl border text-sm font-mono outline-hidden ${
-              isDarkMode ? 'bg-slate-800 border-slate-700 text-white focus:border-indigo-500' : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500'
+              isDarkMode ? 'bg-slate-800 border-slate-700 text-white focus:border-indigo-500' : 'bg-slate-50 border-slate-300 text-slate-900 focus:border-indigo-500'
             }`}
           />
-          {error && <p className="text-xs text-rose-400 mt-1 font-medium">{error}</p>}
+          {error && <p className="text-xs text-rose-500 mt-1 font-medium">{error}</p>}
         </div>
 
         {/* Quick GCSE Past Paper Presets */}
         <div className="space-y-2 mb-5">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
+          <span className={`text-[11px] font-bold uppercase tracking-wider block ${isDarkMode ? 'text-slate-400' : 'text-slate-700'}`}>
             Official Exam Presets
           </span>
           <div className="grid grid-cols-2 gap-2">
@@ -101,11 +105,11 @@ export default function CustomArrayModal({
                 className={`p-2 rounded-xl text-left border text-xs transition-colors ${
                   isDarkMode
                     ? 'bg-slate-800/60 hover:bg-slate-800 border-slate-700 text-slate-200'
-                    : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
+                    : 'bg-slate-50 hover:bg-slate-100 border-slate-300 text-slate-900'
                 }`}
               >
-                <strong className="block text-[11px] text-indigo-400">{p.label}</strong>
-                <span className="text-[10px] text-slate-400 truncate block">[{p.values.join(', ')}]</span>
+                <strong className={`block text-[11px] ${isDarkMode ? 'text-indigo-400' : 'text-indigo-700 font-bold'}`}>{p.label}</strong>
+                <span className={`text-[10px] truncate block ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>[{p.values.join(', ')}]</span>
               </button>
             ))}
           </div>
@@ -116,7 +120,7 @@ export default function CustomArrayModal({
           <button
             onClick={onClose}
             className={`px-4 py-2 rounded-xl text-xs font-semibold ${
-              isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              isDarkMode ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
           >
             Cancel
